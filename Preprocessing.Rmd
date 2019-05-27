@@ -7,13 +7,15 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+require("summarytools")
+data <- read.csv("./Bank.csv", header = TRUE, sep = ";")
 ```
 
 ## Raw Dataset
 
-```{r data}
-data <- read.csv("./Bank.csv", header = TRUE, sep = ";")
-summary(data)
+```{r data, results='asis', echo=FALSE}
+#dfSummary(data, plain.ascii = FALSE, style = "grid", tmp.img.dir = "/tmp")
+dfSummary(data, plain.ascii = FALSE, style = "grid")
 ```
 
 ## Including Plots
