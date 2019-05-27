@@ -1,0 +1,27 @@
+---
+title: "Preprocessing"
+author: "Admin"
+date: "24 4 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Raw Dataset
+
+```{r data}
+data <- read.csv("./Bank.csv", header = TRUE, sep = ";")
+summary(data)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+#plot(data)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
