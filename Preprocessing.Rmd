@@ -9,12 +9,13 @@ output:
     pandoc_args:
     - --filter
     - table_image.py
+params:
+  data: ""
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 require("summarytools")
-data <- read.csv("./Bank.csv", header = TRUE, sep = ";")
 ```
 
 ## Raw Dataset
