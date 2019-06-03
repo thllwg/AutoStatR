@@ -20,6 +20,6 @@ data <- read.csv("./Bank.csv", header = TRUE, sep = ";")
 ## Raw Dataset
 
 ```{r results='asis', echo=FALSE}
-print(dfSummary(data, plain.ascii = FALSE, style = "ma", graph.magnif = 0.75, tmp.img.dir = "/tmp"))
+print(dfSummary(data, plain.ascii = FALSE, style = "multiline", graph.magnif = 0.75, tmp.img.dir = "/tmp"))
 #dfSummary(data, plain.ascii = FALSE, style = "grid")
 ```
