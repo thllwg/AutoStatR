@@ -2,7 +2,9 @@
 title: "Preprocessing"
 author: "Admin"
 date: "24 4 2019"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -14,8 +16,8 @@ data <- read.csv("./Bank.csv", header = TRUE, sep = ";")
 ## Raw Dataset
 
 ```{r data, results='asis', echo=FALSE}
-#dfSummary(data, plain.ascii = FALSE, style = "grid", tmp.img.dir = "/tmp")
-dfSummary(data, plain.ascii = FALSE, style = "grid")
+print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, tmp.img.dir = "/tmp"))
+#print(dfSummary(data, plain.ascii = FALSE, style = "grid"))
 ```
 
 ## Including Plots
