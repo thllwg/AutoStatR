@@ -21,6 +21,6 @@ require("summarytools")
 ## Raw Dataset
 
 ```{r results='asis', echo=FALSE}
-print(dfSummary(data, plain.ascii = FALSE, style = "multiline", graph.magnif = 0.75, tmp.img.dir = "/tmp"))
+print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, tmp.img.dir = "/tmp"))
 #dfSummary(data, plain.ascii = FALSE, style = "grid")
 ```
