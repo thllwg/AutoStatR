@@ -1,26 +1,48 @@
 ---
-title: "Preprocessing"
 author: "Admin"
 date: "24 4 2019"
 output:
   html_document:
     df_print: paged
+    includes:
+      after_body: footer.html
   pdf_document:
     pandoc_args:
     - --filter
     - table_image.py
 params:
   data: ""
+  title: ""
 ---
+<style type="text/css">
+h1.title, h4.date, h4.abstract, p.abstract{
+  text-align: center;
+}
+h1.title{
+  margin-top: 30px;
+}
+h4.abstract{
+  margin-top: 50px;
+}
+</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 require("summarytools")
 ```
+<h1 class="title">`r paste('Automatic report for the dataset:',params$title)`</h1>
+<h4 class="date">`r Sys.Date()`</h4>
+<h4 class="abstract">Abstract</h4>
+<p class="abstract"> This is a report analysing the dataset `r params$title`. </p>
+<hr>
 
-## Raw Dataset
+<h3>Brief description of the data set</h3>
 
 ```{r results='asis', echo=FALSE}
-print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, tmp.img.dir = "/tmp"))
+print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, headings = FALSE, tmp.img.dir = "/tmp"))
 #dfSummary(data, plain.ascii = FALSE, style = "grid")
 ```
+
+<h3>Model construction</h3>
+
+<h3>Model explanation</h3>
