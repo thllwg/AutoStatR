@@ -1,1 +1,3 @@
 iris <- iris
+
+autostatr(iris)
