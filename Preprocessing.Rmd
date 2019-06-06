@@ -10,6 +10,7 @@ output:
     pandoc_args:
     - --filter
     - table_image.py
+runtime: shiny
 params:
   data: ""
   title: ""
@@ -24,25 +25,92 @@ h1.title{
 h4.abstract{
   margin-top: 50px;
 }
+.outer{
+width: 100%;
+}
+#section-scrolltable { margin-top: 20px; height: 600px; overflow: auto; }
+#section-scrolltable table { border-collapse: collapse; }
+#section-scrolltable tr:nth-child(even) { background: #EEE; }
 </style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 require("summarytools")
 ```
+<!-- HEADER SECTION --> 
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
 <h1 class="title">`r paste('Automatic report for the dataset:',params$title)`</h1>
 <h4 class="date">`r Sys.Date()`</h4>
 <h4 class="abstract">Abstract</h4>
 <p class="abstract"> This is a report analysing the dataset `r params$title`. </p>
 <hr>
 
+</div>
+
+</div>
+
+</div>
+
+<!-- FIRST SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
 <h3>Brief description of the data set</h3>
+<p> To confirm that the dataset was loaded correctly, a small summary of the data is given. The dataset has `r ncol(data)` columns and `r nrow(data)` rows. The target column is "`r colnames(data)[length(data)]`" and has `r length(unique(data[,length(data)]))` classes (`r unique(data[,length(data)])`). Therefore, it fits to a classification problem and can be used in this version of the automatic statistician. The table below goes across all the dataset's features. It provides information about the attribute's class, univariate statistics, attribute values, value frequency and value validity.</p><br>
+
+<div id="scrolltable">
 
 ```{r results='asis', echo=FALSE}
 print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, headings = FALSE, tmp.img.dir = "/tmp"))
 #dfSummary(data, plain.ascii = FALSE, style = "grid")
 ```
 
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SECOND SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
 <h3>Model construction</h3>
 
+</div>
+
+</div>
+
+</div>
+
+<!-- THIRD SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+
 <h3>Model explanation</h3>
+
+</div>
+
+</div>
+
+</div>
