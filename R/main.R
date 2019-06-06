@@ -1,5 +1,5 @@
 autostatr <- function(data) {
   require("rmarkdown")
-  rmarkdown::render("Preprocessing.Rmd", params = list(data=iris))
+  rmarkdown::render(system.file("rmarkdown", "Preprocessing.Rmd", package = "AutoStatR"), params = list(data=iris),output_dir = "~/Desktop")
 }
 
