@@ -1,4 +1,9 @@
-.RHistory
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/doc
+
 Preprocessing.pdf
 Preprocessing.html
 Preprocessing.docx

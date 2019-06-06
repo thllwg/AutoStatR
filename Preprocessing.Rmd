@@ -5,10 +5,6 @@ date: "24 4 2019"
 output:
   html_document:
     df_print: paged
-  pdf_document:
-    pandoc_args:
-    - --filter
-    - table_image.py
 params:
   data: ""
 ---
@@ -21,6 +17,6 @@ require("summarytools")
 ## Raw Dataset
 
 ```{r results='asis', echo=FALSE}
-print(dfSummary(data, plain.ascii = FALSE, style = "multiline", graph.magnif = 0.75, tmp.img.dir = "/tmp"))
+print(dfSummary(mtcars, plain.ascii = FALSE, style = "multiline", graph.magnif = 0.75, tmp.img.dir = "/tmp"))
 #dfSummary(data, plain.ascii = FALSE, style = "grid")
 ```
