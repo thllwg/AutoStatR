@@ -13,3 +13,4 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     summarytools
+Remotes: github::thllwg/tpotr
