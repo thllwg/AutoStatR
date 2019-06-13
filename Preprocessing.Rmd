@@ -28,10 +28,22 @@ h4.abstract{
 .outer{
 width: 100%;
 }
-#section-scrolltable { margin-top: 20px; height: 600px; overflow: auto; }
-#section-scrolltable table { border-collapse: collapse; }
-#section-scrolltable tr:nth-child(even) { background: #EEE; }
+.scrolltable { margin-top: 20px; height: 600px; overflow: auto; }
+.scrolltable table { border-collapse: collapse; }
+.scrolltable tr:nth-child(even) { background: #EEE; }
+.expand tr:nth-child(even) { background: #EEE; }
+#expandButton{
+  cursor: pointer;
+}
 </style>
+
+<script>
+var isExpanded = false
+function expand() {
+  isExpanded ? document.getElementById('section-scrolltable').setAttribute("class", "scrolltable") : document.getElementById('section-scrolltable').setAttribute("class", "expand")
+  isExpanded = !isExpanded
+}
+</script>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -65,9 +77,9 @@ require("summarytools")
 <div class="col-sm">
 
 <h3>Brief description of the data set</h3>
-<p> To confirm that the dataset was loaded correctly, a small summary of the data is given. The dataset has `r ncol(data)` columns and `r nrow(data)` rows. The target column is "`r colnames(data)[length(data)]`" and has `r length(unique(data[,length(data)]))` classes (`r unique(data[,length(data)])`). Therefore, it fits to a classification problem and can be used in this version of the automatic statistician. The table below goes across all the dataset's features. It provides information about the attribute's class, univariate statistics, attribute values, value frequency and value validity.</p><br>
+<p> To confirm that the dataset was loaded correctly, a small summary of the data is given. The dataset has `r ncol(data)` columns and `r nrow(data)` rows. The target column is "`r colnames(data)[length(data)]`" and has `r length(unique(data[,length(data)]))` classes (`r unique(data[,length(data)])`). Therefore, it fits to a classification problem and can be used in this version of the automatic statistician. The table below goes across all the dataset's features. It provides information about the attribute's class, univariate statistics, attribute values, value frequency and value validity. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
 
-<div id="scrolltable">
+<div id="scrolltable" class="scrolltable">
 
 ```{r results='asis', echo=FALSE}
 print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, headings = FALSE, tmp.img.dir = "/tmp"))
