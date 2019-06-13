@@ -1,3 +1,3 @@
 iris <- iris
 
-autostatr(iris)
+autostatr(data=iris,target="Species",type="classif")

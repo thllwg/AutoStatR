@@ -6,7 +6,9 @@ output:
   html_document:
     df_print: paged
 params:
-  data: ""
+  data:
+  target: "Species"
+  type: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -20,16 +22,22 @@ require("lime")
 ## Raw Dataset
 
 ```{r results='asis', echo=FALSE}
-print(dfSummary(mtcars, plain.ascii = FALSE, style = "grid", graph.magnif = 0.75, tmp.img.dir = "/tmp"))
-#dfSummary(data, plain.ascii = FALSE, style = "grid")
+data <- data
+print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.75, tmp.img.dir = "/tmp"))
 ```
 
 ## Fitting a machine learning pipeline
 ```{r echo=FALSE}
-learner = makeLearner(cl = "classif.tpot", predict.type = "prob", population_size = 10, generations = 15, verbosity = 2)
-mod = train(learner, task = iris.task)
-print("The fitted pipeline is: ")
-print(mod$learner.model$TPOTObject$fitted_pipeline_)
+learner <- makeLearner(cl = "classif.tpot", predict.type = "prob", 
+                       population_size = 10, generations = 15, 
+                       verbosity = 2)
+if(type=="classif"){
+  task <- makeClassifTask(data = data, target = target)
+} else{
+  task <- makeRegrTask(data = data, target = target)
+}
+mod <- train(learner, task = task)
+# print(paste("The fitted pipeline is: " , printPipeline(mod)))
 predict(obj = mod, newdata = iris[37:43,])
 ```
 
