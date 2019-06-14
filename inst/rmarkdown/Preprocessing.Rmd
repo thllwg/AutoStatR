@@ -1,15 +1,52 @@
 ---
-title: "Preprocessing"
 author: "Admin"
 date: "24 4 2019"
 output:
   html_document:
     df_print: paged
+    includes:
+      after_body: footer.html
+  pdf_document:
+    pandoc_args:
+    - --filter
+    - table_image.py
+runtime: shiny
 params:
-  data:
+  data: ""
+  title: ""
   target: "Species"
   type: TRUE
 ---
+
+<style type="text/css">
+h1.title, h4.date, h4.abstract, p.abstract{
+  text-align: center;
+}
+h1.title{
+  margin-top: 30px;
+}
+h4.abstract{
+  margin-top: 50px;
+}
+.outer{
+width: 100%;
+}
+.scrolltable { margin-top: 20px; height: 600px; overflow: auto; }
+.scrolltable table { border-collapse: collapse; }
+.scrolltable tr:nth-child(even) { background: #EEE; }
+.expand tr:nth-child(even) { background: #EEE; }
+#expandButton{
+  cursor: pointer;
+}
+</style>
+
+<script>
+var isExpanded = false
+function expand() {
+  isExpanded ? document.getElementById('section-scrolltable').setAttribute("class", "scrolltable") : document.getElementById('section-scrolltable').setAttribute("class", "expand")
+  isExpanded = !isExpanded
+}
+</script>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -19,14 +56,61 @@ require("mlr")
 require("lime")
 ```
 
-## Raw Dataset
+<!-- HEADER SECTION --> 
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+<h1 class="title">`r paste('Automatic report for the dataset:',params$title)`</h1>
+<h4 class="date">`r Sys.Date()`</h4>
+<h4 class="abstract">Abstract</h4>
+<p class="abstract"> This is a report analysing the dataset `r params$title`. </p>
+<hr>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- FIRST SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+<h3>Brief description of the data set</h3>
+<p> To confirm that the dataset was loaded correctly, a small summary of the data is given. The dataset has `r ncol(data)` columns and `r nrow(data)` rows. The target column is "`r colnames(data)[length(data)]`" and has `r length(unique(data[,length(data)]))` classes (`r unique(data[,length(data)])`). Therefore, it fits to a classification problem and can be used in this version of the automatic statistician. The table below goes across all the dataset's features. It provides information about the attribute's class, univariate statistics, attribute values, value frequency and value validity. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
+
+<div id="scrolltable" class="scrolltable">
 
 ```{r results='asis', echo=FALSE}
-data <- data
-print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.75, tmp.img.dir = "/tmp"))
+print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, headings = FALSE, tmp.img.dir = "/tmp"))
+#dfSummary(data, plain.ascii = FALSE, style = "grid")
 ```
 
-## Fitting a machine learning pipeline
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SECOND SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+<h3>Fitting a machine learning pipeline</h3>
+
 ```{r echo=FALSE}
 learner <- makeLearner(cl = "classif.tpot", predict.type = "prob", 
                        population_size = 10, generations = 15, 
@@ -37,14 +121,37 @@ if(type=="classif"){
   task <- makeRegrTask(data = data, target = target)
 }
 mod <- train(learner, task = task)
-# print(paste("The fitted pipeline is: " , printPipeline(mod)))
+print(paste("The fitted pipeline is: " , printPipeline(mod)))
 predict(obj = mod, newdata = iris[37:43,])
 ```
 
-## Explaining the pipeline model
+</div>
+
+</div>
+
+</div>
+
+<!-- THIRD SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+
+<h3>Model explanation</h3>
+
 ```{r echo=FALSE}
 explainer = lime(iris, mod)
 explanation = explain(iris[37:43,], explainer, n_labels = 1, n_features = 4)
 plot_features(explanation)
 
 ```
+
+</div>
+
+</div>
+
+</div>
+
