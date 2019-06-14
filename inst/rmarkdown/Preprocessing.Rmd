@@ -6,13 +6,9 @@ output:
     df_print: paged
     includes:
       after_body: footer.html
-  pdf_document:
-    pandoc_args:
-    - --filter
-    - table_image.py
 runtime: shiny
 params:
-  data: ""
+  data:
   title: ""
   target: "Species"
   type: TRUE
@@ -89,6 +85,7 @@ require("lime")
 <div id="scrolltable" class="scrolltable">
 
 ```{r results='asis', echo=FALSE}
+data <- data
 print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, headings = FALSE, tmp.img.dir = "/tmp"))
 #dfSummary(data, plain.ascii = FALSE, style = "grid")
 ```
@@ -113,7 +110,7 @@ print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, h
 
 ```{r echo=FALSE}
 learner <- makeLearner(cl = "classif.tpot", predict.type = "prob", 
-                       population_size = 10, generations = 15, 
+                       population_size = 10, generations = 2, 
                        verbosity = 2)
 if(type=="classif"){
   task <- makeClassifTask(data = data, target = target)
@@ -143,10 +140,10 @@ predict(obj = mod, newdata = iris[37:43,])
 <h3>Model explanation</h3>
 
 ```{r echo=FALSE}
-explainer = lime(iris, mod)
-explanation = explain(iris[37:43,], explainer, n_labels = 1, n_features = 4)
-plot_features(explanation)
-
+require("lime")
+explainer = lime(data, mod)
+explanation = explain(data[1:5], explainer, n_labels = 1, n_features = 5)
+plot_explanations(explanation)
 ```
 
 </div>
