@@ -13,8 +13,9 @@ output:
 runtime: shiny
 params:
   data: ""
+  data_to_predict: NULL
   title: ""
-  target: "Species"
+  target: ""
   type: TRUE
 ---
 
@@ -38,6 +39,17 @@ width: 100%;
 #expandButton{
   cursor: pointer;
 }
+#pipeline{
+  background-color: #EEE;
+  font-size: 110%;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  border-color: transparent;
+  width: fit-content;
+}
+#section-generations{
+  text-align: center;
+}
 </style>
 
 <script>
@@ -54,6 +66,9 @@ require("summarytools")
 require("tpotr")
 require("mlr")
 require("lime")
+require("stringr")
+require("knitr")
+#require(kableExtra)
 ```
 
 <!-- HEADER SECTION --> 
@@ -84,7 +99,7 @@ require("lime")
 <div class="col-sm">
 
 <h3>Brief description of the data set</h3>
-<p> To confirm that the dataset was loaded correctly, a small summary of the data is given. The dataset has `r ncol(data)` columns and `r nrow(data)` rows. The target column is "`r colnames(data)[length(data)]`" and has `r length(unique(data[,length(data)]))` classes (`r unique(data[,length(data)])`). Therefore, it fits to a classification problem and can be used in this version of the automatic statistician. The table below goes across all the dataset's features. It provides information about the attribute's class, univariate statistics, attribute values, value frequency and value validity. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
+<p> To confirm that the dataset was loaded correctly, a small summary of the data is given. The dataset has `r ncol(data)` columns and `r nrow(data)` rows. The target column is "`r colnames(data)[length(data)]`" and has `r length(levels(data[,length(data)]))` classes (`r levels(data[,length(data)])`). Therefore, it fits to a classification problem and can be used in this version of the automatic statistician. The table below goes across all the dataset's features. It provides information about the attribute's class, univariate statistics, attribute values, value frequency and value validity. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
 
 <div id="scrolltable" class="scrolltable">
 
@@ -111,18 +126,51 @@ print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, h
 
 <h3>Fitting a machine learning pipeline</h3>
 
-```{r echo=FALSE}
+```{r echo=FALSE, include=FALSE}
 learner <- makeLearner(cl = "classif.tpot", predict.type = "prob", 
                        population_size = 10, generations = 15, 
                        verbosity = 2)
 if(type=="classif"){
-  task <- makeClassifTask(data = data, target = target)
+  task <- makeClassifTask(data = params$data, target = params$target)
 } else{
-  task <- makeRegrTask(data = data, target = target)
+  task <- makeRegrTask(data = params$data, target = params$target)
 }
 mod <- train(learner, task = task)
-print(paste("The fitted pipeline is: " , printPipeline(mod)))
-predict(obj = mod, newdata = iris[37:43,])
+pipeline_output <- printPipeline(mod)
+pipeline <- gsub("^\\s+|\\s+$", "", sub(".*pipeline:", "", pipeline_output))
+generations_list <- lapply(str_extract_all(printPipeline(mod), "score: 0.\\d+"), function(x){
+  as.numeric(sub("score: ", "", x))
+})
+generations <- unlist(generations_list)
+```
+
+<p>The Automated Statistician has found a machine learning pipeline, that can predict the target variable in the dataset "`r params$title`". Therefore, it used the TPOT Data Science Assistant R-Version. The best machine learning pipeline is:</p>
+
+<pre id="pipeline">
+<code>
+`r pipeline`
+</code>
+</pre>
+
+<p>
+To find the best learning pipeline, the TPOT Data Science Assistant created a total of `r length(generations)` generations. The best pipeline has an accurancy of `r max(generations)` for the input training data. Below is a plot which shows how the accuracy developed over the generations.
+</p>
+
+<div id="generations">
+```{r echo=FALSE}
+plot(generations, type="b", xlab="Generations", ylab="CV score", xaxt="n")
+axis(1, at = seq(1, 15, by = 1), las=2)
+```
+</div>
+
+`r if(nrow(params$data_to_predict)){"For the provided test data the pipeline predicted the missing target feature values:"}`
+```{r echo=FALSE}
+if(nrow(params$data_to_predict) > 0){
+  test <- params$data_to_predict[,1:ncol(params$data_to_predict)-1]
+  prediction <- predict(obj = mod, newdata = test)$data$response
+  kable(cbind(test,prediction))
+  #print(performance(pred = prediction, measures=list(acc)))
+}
 ```
 
 </div>
@@ -143,9 +191,9 @@ predict(obj = mod, newdata = iris[37:43,])
 <h3>Model explanation</h3>
 
 ```{r echo=FALSE}
-explainer = lime(iris, mod)
-explanation = explain(iris[37:43,], explainer, n_labels = 1, n_features = 4)
-plot_features(explanation)
+#explainer = lime(iris, mod)
+#explanation = explain(iris[37:43,], explainer, n_labels = 1, n_features = 4)
+#plot_features(explanation)
 
 ```
 
