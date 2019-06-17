@@ -12,7 +12,7 @@ params:
   data_to_predict: NULL
   title: ""
   target: ""
-  type: TRUE
+  type: ""
 ---
 
 <style type="text/css">
@@ -193,7 +193,7 @@ if(nrow(params$data_to_predict) > 0){
 require("lime")
 require("iml")
 
-predictor <- Predictor$new(mod, data=data, y = target)
+predictor <- Predictor$new(mod, data=params$data, y = params$target)
 
 imp <- FeatureImp$new(predictor, loss = "ce",  compare = "difference")
 
@@ -205,13 +205,13 @@ ale <- FeatureEffect$new(predictor, feature = mostimp)
 
 ale$plot()
 
-explainer <- lime(data, mod)
+explainer <- lime(params$data, mod)
 
-levels <- levels(data[,target])
+levels <- levels(params$data[,params$target])
 
 for(level in levels){
-  tempdata <-data[data[,target] == level,]
-  explainer <- lime(data, mod)
+  tempdata <-params$data[params$data[,params$target] == level,]
+  explainer <- lime(params$data, mod)
   explanation <- explain(tempdata[1:5,], explainer, n_labels = 1, n_features = 5)
   print(plot_explanations(explanation))
 }
