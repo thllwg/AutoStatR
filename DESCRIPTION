@@ -14,5 +14,7 @@ LazyData: true
 Imports: 
     summarytools,
     rmarkdown,
-    stringr
+    stringr,
+    kableExtra,
+    magrittr
 Remotes: github::thllwg/tpotr
