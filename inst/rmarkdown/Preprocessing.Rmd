@@ -133,12 +133,8 @@ if(type=="classif"){
   task <- makeRegrTask(data = params$data, target = params$target)
 }
 mod <- train(learner, task = task)
-pipeline_output <- printPipeline(mod)
-pipeline <- gsub("^\\s+|\\s+$", "", sub(".*pipeline:", "", pipeline_output))
-generations_list <- lapply(str_extract_all(printPipeline(mod), "score: 0.\\d+"), function(x){
-  as.numeric(sub("score: ", "", x))
-})
-generations <- unlist(generations_list)
+pipeline <- getPipeline(mod)
+generations <- getGenerations(mod)
 ```
 
 <p>The Automated Statistician has found a machine learning pipeline, that can predict the target variable in the dataset "`r params$title`". Therefore, it used the TPOT Data Science Assistant R-Version. The best machine learning pipeline is:</p>
