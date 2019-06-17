@@ -110,7 +110,7 @@ print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, h
 
 ```{r echo=FALSE}
 learner <- makeLearner(cl = "classif.tpot", predict.type = "prob", 
-                       population_size = 10, generations = 2, 
+                       population_size = 10, generations = 15, 
                        verbosity = 2)
 if(type=="classif"){
   task <- makeClassifTask(data = data, target = target)
@@ -138,12 +138,34 @@ predict(obj = mod, newdata = iris[37:43,])
 
 
 <h3>Model explanation</h3>
+<p> To enable a model explenation for every possible class 5 different observations were selected. For these 5 observations lime is used to explain the prediction of the model.</p><br>
 
 ```{r echo=FALSE}
 require("lime")
-explainer = lime(data, mod)
-explanation = explain(data[1:5], explainer, n_labels = 1, n_features = 5)
-plot_explanations(explanation)
+require("iml")
+
+predictor <- Predictor$new(mod, data=data, y = target)
+
+imp <- FeatureImp$new(predictor, loss = "ce",  compare = "difference")
+
+plot(imp)
+
+mostimp <- imp$results[1,1]
+
+ale <- FeatureEffect$new(predictor, feature = mostimp)
+
+ale$plot()
+
+explainer <- lime(data, mod)
+
+levels <- levels(data[,target])
+
+for(level in levels){
+  tempdata <-data[data[,target] == level,]
+  explainer <- lime(data, mod)
+  explanation <- explain(tempdata[1:5,], explainer, n_labels = 1, n_features = 5)
+  print(plot_explanations(explanation))
+}
 ```
 
 </div>
