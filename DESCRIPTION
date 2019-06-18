@@ -16,3 +16,4 @@ Imports:
     rmarkdown,
     stringr
 Remotes: github::thllwg/tpotr
+System Requirements: xquartz
