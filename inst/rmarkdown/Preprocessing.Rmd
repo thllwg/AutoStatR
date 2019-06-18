@@ -48,6 +48,17 @@ width: 100%;
 }
 #section-explenation{
   text-align: center;
+ }
+#predictions div{
+  max-height: 300px;
+  margin-top: 15px;
+  padding: 0px !important;
+}
+#predictions div table thead tr th{
+  text-align: center !important;
+}
+#predictions div table tbody tr td{
+  text-align: center !important;
 }
 </style>
 
@@ -69,7 +80,8 @@ require("knitr")
 require("iml")
 require("lime")
 require("ggplot2")
-#require(kableExtra)
+require("kableExtra")
+require("magrittr")
 ```
 
 <!-- HEADER SECTION --> 
@@ -137,7 +149,20 @@ if(type=="classif"){
 } else{
   task <- makeRegrTask(data = params$data, target = params$target)
 }
-mod <- train(learner, task = task)
+mod = NULL
+pred = NULL
+again = TRUE
+while(again == TRUE){
+  result = try({
+    mod = train(learner, task)
+    pred = predict(obj = mod, newdata = test)
+  }, silent = TRUE)
+  if (inherits(result, "try-error")){
+    again = TRUE
+  } else {
+    again = FALSE
+  }
+}
 pipeline <- getPipeline(mod)
 generations <- getGenerations(mod)
 ```
@@ -161,15 +186,29 @@ axis(1, at = seq(1, 15, by = 1), las=2)
 ```
 </div>
 
+<div id="predictions"> 
+
 `r if(nrow(params$data_to_predict)){"For the provided test data the pipeline predicted the missing target feature values:"}`
 ```{r echo=FALSE}
 if(nrow(params$data_to_predict) > 0){
   test <- params$data_to_predict[,1:ncol(params$data_to_predict)-1]
-  prediction <- predict(obj = mod, newdata = test)$data$response
-  kable(cbind(test,prediction))
+  prediction <- cbind("Prediction" = predict(obj = mod, newdata = test)$data$response, test)
+  write.csv2(prediction, "./prediction.csv")
+  readLines("./prediction.csv") %>% 
+  paste0(collapse="\n") %>% 
+  openssl::base64_encode() -> encoded
+}
+```
+```{r echo=FALSE}
+if(nrow(params$data_to_predict) > 0){
+  kable(prediction) %>% kable_styling(fixed_thead = T) %>% scroll_box(width = "100%")
   #print(performance(pred = prediction, measures=list(acc)))
 }
 ```
+
+</div>
+
+<a download="prediction.csv" href="`r sprintf('data:text/csv;base64,%s', encoded)`">Download this data as .csv</a>
 
 </div>
 
