@@ -1,6 +1,3 @@
-d <- iris
-d[c(1:10),5] <- NA
-
 autostatr <- function(data, data_to_predict=NULL, target,
                       type = c("regr","classif"),
                       explain = c("importance","lime","ale"),
