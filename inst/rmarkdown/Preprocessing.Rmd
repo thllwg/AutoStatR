@@ -208,10 +208,12 @@ if(nrow(params$data_to_predict) > 0){
   #print(performance(pred = prediction, measures=list(acc)))
 }
 ```
-
+```{r echo=FALSE}
+link <- paste0("<a download='prediction.csv' href=", sprintf('data:text/csv;base64,%s', encoded), ">Download this data as   .csv</a>")
+```
 </div>
 
-`r if(nrow(params$data_to_predict)){"<a download='prediction.csv' href='r sprintf('data:text/csv;base64,%s', encoded)'>Download this data as .csv</a>"}`
+`r if(nrow(params$data_to_predict)){link}`
 
 </div>
 
