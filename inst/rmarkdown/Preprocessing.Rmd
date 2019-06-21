@@ -209,8 +209,9 @@ if(nrow(params$data_to_predict) > 0){
 }
 ```
 ```{r echo=FALSE}
-link <- paste0("<a download='prediction.csv' href=", ">Download this data as   .csv</a>")
-#sprintf('data:text/csv;base64,%s', encoded)
+if(nrow(params$data_to_predict) > 0){
+  link <- paste0("<a download='prediction.csv' href=", sprintf('data:text/csv;base64,%s', encoded), ">Download this data as   .csv</a>")
+}
 ```
 </div>
 
