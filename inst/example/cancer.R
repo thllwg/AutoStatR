@@ -14,14 +14,13 @@ df <- df[,c(2:11)]
 df[df[]["Class"] == 2, "Class"] <- "two"
 df[df[]["Class"] == 4, "Class"] <- "four"
 
-# Training and Test Split -----------------------------------------------------
+# Train and test split -----------------------------------------------------
 set.seed(101)
 sample = sample.split(df$"ClumpThickness", SplitRatio = 2/3)
 train = subset(df, sample == TRUE)
 test  = subset(df, sample == FALSE)
 test[,10] <- NA
-data = rbind(train,test)
-str(data)
+cancer.data = rbind(train,test)
 
 # Call the automatic statistician ---------------------------------------------
-autostatr(data=data, target="Class", type="classif", title="Breast Cancer")
+autostatr(data=cancer.data, target="Class", type="classif", title="Breast Cancer")
