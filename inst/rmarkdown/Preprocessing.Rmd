@@ -115,11 +115,7 @@ require("magrittr")
 <div class="col-sm">
 
 <h3>Brief description of the data set</h3>
-<<<<<<< HEAD
 <p> To confirm that the dataset was loaded correctly, a small summary of the data is given. The dataset has `r ncol(data)` features (columns) and `r nrow(data)` observations (rows). The feature of interest, the target column, is "`r colnames(data)[length(data)]`" and has `r length(levels(data[,length(data)]))` classes (`r levels(data[,length(data)])`). Therefore, it fits to a classification problem and can be used in this version of the Automatic Statistician. The table below goes across all the dataset's features and shall give an descriptive overview of each feature. It provides the following information: <strong>No:</strong> The number of the feature indicating the order in which it appears in the dataset. <strong>Attribute:</strong> The name of the feature and its class. <strong>Stats/Values:</strong> An insight into the feature's values. <strong>Freqs: </strong> The frequency, proportions or number of distinct values. <strong>Graph:</strong> A histogram or barplot of the feature's values. <strong> Valid/Missing:</strong> The number and proportion of valid and missing values in the feature. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
-=======
-<p> To confirm that the dataset was loaded correctly, a small summary of the data is given. The dataset has `r ncol(data)` columns and `r nrow(data)` rows. The target column is "`r target`" and has `r length(levels(data[,length(data)]))` classes (`r levels(data[,length(data)])`). Therefore, it fits to a classification problem and can be used in this version of the automatic statistician. The table below goes across all the dataset's features. It provides information about the attribute's class, univariate statistics, attribute values, value frequency and value validity. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
->>>>>>> f7a13056c57226491fbc4d0e23190d0dcf0ae61f
 
 <div id="scrolltable" class="scrolltable">
 
