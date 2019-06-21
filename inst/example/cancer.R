@@ -1,26 +1,23 @@
-require("caTools")
+data(BreastCancer, package = "mlbench")
+df = BreastCancer
+df = df[complete.cases(df), ]
+df$Id = NULL
+df[,1] = as.numeric(df[,1])
+df[,2] = as.numeric(df[,2])
+df[,3] = as.numeric(df[,3])
+df[,4] = as.numeric(df[,4])
+df[,5] = as.numeric(df[,5])
+df[,6] = as.numeric(df[,6])
+df[,7] = as.numeric(df[,7])
+df[,8] = as.numeric(df[,8])
+df[,9] = as.numeric(df[,9])
 
-# Preprocessing ---------------------------------------------------------------
-df <- read.csv(url("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/breast-cancer-wisconsin.data"), header = FALSE)
-colnames(df) <- c('SampleCodenumber', 'ClumpThickness', 'UniformityOfCellSize',
-                  'UniformityofCellShape', 'MarginalAdhesion', 'SingleEpithelialCellSize',
-                  'BareNuclei', 'BlandChromatin', 'NormalNucleoli', 'Mitoses', 'Class')
-missing <- (apply(df, 1, function(x){any(x == "?")}))
-df <- df[!missing,]
-df$"BareNuclei" <- as.integer(as.character(df$"BareNuclei"))
-df <- df[,c(2:11)]
+smp_size <- floor(0.95 * nrow(df))
+## set the seed to make your partition reproducible
+set.seed(123)
+train_ind <- sample(seq_len(nrow(df)), size = smp_size)
 
-# Replace numerical values by string to avoid FeatureImp error ----------------
-df[df[]["Class"] == 2, "Class"] <- "two"
-df[df[]["Class"] == 4, "Class"] <- "four"
+train <- df[train_ind, ]
+test <- df[-train_ind, ]
 
-# Train and test split -----------------------------------------------------
-set.seed(101)
-sample = sample.split(df$"ClumpThickness", SplitRatio = 2/3)
-train = subset(df, sample == TRUE)
-test  = subset(df, sample == FALSE)
-test[,10] <- NA
-cancer.data = rbind(train,test)
-
-# Call the automatic statistician ---------------------------------------------
-autostatr(data=cancer.data, target="Class", type="classif", title="Breast Cancer")
+autostatr(data = train, data_to_predict = test, target = "Class", type = "classif", title = "Breast Cancer")
