@@ -18,3 +18,4 @@ Imports:
     kableExtra,
     magrittr
 Remotes: github::thllwg/tpotr
+System Requirements: xquartz
