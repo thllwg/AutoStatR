@@ -52,7 +52,7 @@ width: 100%;
 #section-explenation{
   text-align: center;
  }
-#predictions div{
+#section-predictions div{
   max-height: 300px;
   margin-top: 15px;
   padding: 0px !important;
@@ -189,7 +189,7 @@ axis(1, at = seq(1, 15, by = 1), las=2)
 ```
 </div>
 
-<div id="predictions"> 
+<div id="predictions">
 
 `r if(nrow(params$data_to_predict)){"For the provided test data the pipeline predicted the missing target feature values:"}`
 ```{r echo=FALSE}
