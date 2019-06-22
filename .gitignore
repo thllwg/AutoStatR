@@ -7,3 +7,5 @@ inst/doc
 Preprocessing.pdf
 Preprocessing.html
 Preprocessing.docx
+
+inst/rmarkdown/prediction.csv
