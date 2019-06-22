@@ -85,6 +85,7 @@ require("lime")
 require("ggplot2")
 require("kableExtra")
 require("magrittr")
+require("dplyr")
 ```
 
 <!-- HEADER SECTION --> 
@@ -251,6 +252,8 @@ imp.features <- imp.df[1:min,"feature"]
 imp.features
 ```
 
+<br>
+
 <h4>Feature Importance</h4>
 <p>When analysing machine learning algorithms it is important to know, which features are most important for the prediction of the algorithm.</p>
 
@@ -266,12 +269,14 @@ plot(imp) + labs(x = "Feature Importance (Classification Error as Loss)", y = "F
 
 <p>The plot shows that from the <b>`r length(data) - 1`</b> features of the data set the following <b>`r length(imp.features)`</b> are identified as the most important features that account for at least <b>80%</b> of the total prediction error: <b>`r paste(imp.features, sep = ", ")`</b>.</p>
 
+<br>
+
 <h4>Accumulated Local Effects</h4>
 <p>The goal of the first step was to analyse which features influence the prediction of the found model the most. As a next step it is analyzed, how the features influence the prediction of the model. This is done by accumulated local affects.</p>
 
 <p><i>Accumulated local effects (ALE) describe how features influence the prediction of a machine learning model on average.</i></p>
 
-<p>The following two ALE-plots show how the two most important features (<b>`r paste(imp.features[1:2], sep = ", ")`</b>) influencec the prediction of the model:</p>
+<p>The following two ALE-plots show how the two most important features (<b>`r paste(imp.features[1:2], sep = ", ")`</b>) influence the prediction of the model:</p>
 
 <div id="explenation">
 ```{r echo=FALSE}
@@ -280,13 +285,24 @@ first.feature <- imp.features[1]
 ale <- FeatureEffect$new(predictor, feature = first.feature)
 ale$plot() + theme_bw()
 
+# Extract result --------------------------------------------------------------
+ale.result <- ale$results
+temp.result <- ale.result %>%
+  group_by_(first.feature) %>%
+  slice(which.max(.ale))
+temp.result2 <- temp.result %>%
+  group_by(.class) %>%
+  summarise(min = min(!!sym(first.feature)), max = max(!!sym(first.feature)))
+
 # Extract description ---------------------------------------------------------
-levels <- levels(params$data[,params$target])
+levels <- temp.result2[[1]]
 ale.desc <- vector(mode="character", length=length(levels))
 for(i in 1:length(levels)){
   level <- levels[i]
-  ale.desc[i] <- paste("The class ", level, " is based on the feature ", 
-                       first.feature, " most likely for values. ")
+  temp.result <- subset(temp.result2, .class == level)
+  ale.desc[i] <- paste("The class ", "<b>", level, "</b>", " is based on the feature ", 
+                       first.feature, " most likely for values between ",
+                       temp.result[[1,"min"]], " and ", temp.result[[1,"max"]])
 }
 ```
 </div>
@@ -300,18 +316,31 @@ second.feature <- imp.features[2]
 ale <- FeatureEffect$new(predictor, feature = second.feature)
 ale$plot() + theme_bw()
 
+# Extract result --------------------------------------------------------------
+ale.result <- ale$results
+temp.result <- ale.result %>%
+  group_by_(second.feature) %>%
+  slice(which.max(.ale))
+temp.result2 <- temp.result %>%
+  group_by(.class) %>%
+  summarise(min = min(!!sym(second.feature)), max = max(!!sym(second.feature)))
+
 # Extract description ---------------------------------------------------------
-levels <- levels(params$data[,params$target])
+levels <- temp.result2[[1]]
 ale.desc <- vector(mode="character", length=length(levels))
 for(i in 1:length(levels)){
   level <- levels[i]
-  ale.desc[i] <- paste("The class ", level, " is based on the feature ", 
-                       first.feature, " most likely for values. ")
+  temp.result <- subset(temp.result2, .class == level)
+  ale.desc[i] <- paste("The class ", "<b>", level, "</b>", " is based on the feature ", 
+                       first.feature, " most likely for values between ",
+                       temp.result[[1,"min"]], " and ", temp.result[[1,"max"]])
 }
 ```
 </div>
 
 <p>The second most important feature according to the feature importance analysis is <b>`r paste(imp.features[2], sep = ", ")`</b>. The plot illustrates how <b>`r paste(imp.features[2], sep = ", ")`</b> influences the target <b>`r target`</b>. `r paste(ale.desc)`</p>
+
+<br>
 
 <h4>Lime</h4>
 <p>The last step is to not look at an avereaged influence of the features, but at individual observation to explain, why the model makes an individual classification. This is especially usefull to explain the reason for individual predictions on the prediction data.</p>
@@ -324,16 +353,16 @@ for(i in 1:length(levels)){
 
 <div id="explenation">
 ```{r echo=FALSE}
-explainer <- lime(params$data, mod)
-levels <- levels(params$data[,params$target])
-
-for(level in levels){
-  tempdata <- params$data[params$data[,params$target] == level,]
-  nrow <- nrow(tempdata)
-  sample <- sample.int(nrow, size = 5, replace = FALSE)
-  explanation <- explain(tempdata[sample,], explainer, n_labels = 1, n_features = 5)
-  print(plot_explanations(explanation))
-}
+# explainer <- lime(params$data, mod)
+# levels <- levels(params$data[,params$target])
+# 
+# for(level in levels){
+#    tempdata <- params$data[params$data[,params$target] == level,]
+#    nrow <- nrow(tempdata)
+#    sample <- sample.int(nrow, size = 5, replace = FALSE)
+#    explanation <- explain(tempdata[sample,], explainer, n_labels = 1, n_features = 5)
+#    print(plot_explanations(explanation))
+# }
 ```
 </div>
 
