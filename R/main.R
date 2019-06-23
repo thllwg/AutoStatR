@@ -1,3 +1,18 @@
+#' Creating a report with the Automated Statistican.
+#'
+#' \code{autostatr} creates a report for the dataset given as a functions argument.
+#'
+#'
+#' @param data data.frame containing the data the report should be based upon on.
+#' @param data_to_predict You can provide data that you want to be predicted as a data.frame
+#' if you don't provide \code{data_to_predict}, the tools looks for \code{NA} target values in
+#' \code{data}.
+#' @param target character name of the target column in data (and data_to_predict)
+#' @param type character type of ML-procedure. Only classification is supported.
+#' @param output_dir character target folder for report
+#' @param title Name of the report.
+#' @return Report can be found at \code{output_dir}
+#' @export
 autostatr <- function(data, data_to_predict=NULL, target,
                       type = c("regr","classif"),
                       # explain = c("importance","lime","ale"),
