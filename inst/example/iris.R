@@ -4,3 +4,4 @@ iris.data[c(1:10),5] <- NA
 
 # Call the automatic statistician ---------------------------------------------
 autostatr(data=iris.data, target="Species", type="classif", title="Iris")
+

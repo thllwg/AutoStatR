@@ -16,6 +16,7 @@ Imports:
     rmarkdown,
     stringr,
     kableExtra,
-    magrittr
+    magrittr,
+    lime
 Remotes: github::thllwg/tpotr
 System Requirements: xquartz
