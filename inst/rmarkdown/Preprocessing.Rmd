@@ -82,13 +82,38 @@ width: 100%;
   display: block;
   margin: 0 auto;
 }
+#section-explanationSample{
+  
+}
+.exexpand{
+  display: block;
+}
+.excollapse{
+  display: none;
+}
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  text-align: center;
+}
 </style>
 
 <script>
-var isExpanded = false
+var isExpanded = false;
+var isExpanded2 = false;
 function expand() {
   isExpanded ? document.getElementById('section-scrolltable').setAttribute("class", "scrolltable") : document.getElementById('section-scrolltable').setAttribute("class", "expand")
   isExpanded = !isExpanded
+}
+function expand2(){
+  isExpanded2 ? document.getElementById('section-explanationSample').setAttribute("class", "excollapse") :     document.getElementById('section-explanationSample').setAttribute("class", "exexpand")
+  isExpanded2 = !isExpanded2
 }
 </script>
 
@@ -224,9 +249,10 @@ if(nrow(params$data_to_predict) > 0){
   openssl::base64_encode() -> encoded
 }
 ```
-```{r echo=FALSE}
+```{r echo=FALSE, results='asis'}
 if(nrow(params$data_to_predict) > 0){
-  kable(prediction) %>% kable_styling(fixed_thead = T) %>% scroll_box(width = "100%")
+  cat(kable(prediction) %>% kable_styling(fixed_thead = T) %>% scroll_box(width = "100%"))
+  cat('\n')
   #print(performance(pred = prediction, measures=list(acc)))
 }
 ```
@@ -367,8 +393,8 @@ for(i in 1:length(levels)){
 <p><i>Local surrogate models like LIME are interpretable models that are used to explain individual predictions of black box machine learning models.</i></p>
 
 <div id="explanationLimeTestData">
-<h5>Predictions</h5>
-<p>For the predicted data Lime provides the following explanations. The colour represents the feature weight and gives an indication, which features and feature values are most responsible for the prediction.</p>
+<h5>Explaining the predicted values</h5>
+<p>For the predicted data Lime provides the below explanations. The colour represents the feature weight and gives an indication, which features and feature values are most responsible for the prediction.</p>
 ```{r echo=FALSE, results='asis'}
 explainer1 <- lime(params$data, mod)
 explanation <- lime::explain(test, explainer1, n_labels = 1, n_features = 5)
@@ -376,11 +402,12 @@ print(plot_explanations(explanation))
 ```
 </div>
 
+<button class="collapsible" onclick="expand2()">+See more/less observations explained</button>
+
+<div id="explanationSample" class="excollapse">
 <p>To explain the inner working of the found model even further, randomely 5 observations are selected for each class and their belonging to each class is explained with LIME.</p>
 
 <p>In the following plots for each class 5 selected observations are eplained by LIME.</p>
-
-<div>
 ```{r echo=FALSE, results='asis'}
 levels <- levels(params$data[,params$target])
 for(level in levels){
