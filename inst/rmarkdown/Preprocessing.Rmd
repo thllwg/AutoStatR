@@ -78,6 +78,10 @@ width: 100%;
   display: block;
   margin: 0 auto;
 }
+#section-explanationLimeTestData img{
+  display: block;
+  margin: 0 auto;
+}
 </style>
 
 <script>
@@ -362,13 +366,22 @@ for(i in 1:length(levels)){
 
 <p><i>Local surrogate models like LIME are interpretable models that are used to explain individual predictions of black box machine learning models.</i></p>
 
-<p>To explain the inner working of the found model, randomely 5 observations are selected for each class and their belonging to each class is explained with LIME.</p>
+<div id="explanationLimeTestData">
+<h5>Predictions</h5>
+<p>For the predicted data Lime provides the following explanations. The colour represents the feature weight and gives an indication, which features and feature values are most responsible for the prediction.</p>
+```{r echo=FALSE, results='asis'}
+explainer1 <- lime(params$data, mod)
+explanation <- lime::explain(test, explainer1, n_labels = 1, n_features = 5)
+print(plot_explanations(explanation))
+```
+</div>
 
-<p>In the following plots for each class 5 selected observations are eplained by LIME. The colour represents the feature weight and gives an indication, which features and feature values are most responsible for the prediction.</p>
+<p>To explain the inner working of the found model even further, randomely 5 observations are selected for each class and their belonging to each class is explained with LIME.</p>
+
+<p>In the following plots for each class 5 selected observations are eplained by LIME.</p>
 
 <div>
 ```{r echo=FALSE, results='asis'}
-explainer1 <- lime(params$data, mod)
 levels <- levels(params$data[,params$target])
 for(level in levels){
    cat('<div id="explanationLime">')
@@ -378,7 +391,7 @@ for(level in levels){
    nrow <- nrow(tempdata)
    sample <- sample.int(nrow, size = 5, replace = FALSE)
    tempdata2 <- tempdata[sample,]
-   explanation <- lime::explain(tempdata2, explainer1, n_labels = 1, n_features = 5)
+   explanation <- lime::explain(tempdata2[,1:length(tempdata2)-1], explainer1, n_labels = 1, n_features = 5)
    for (r in rownames(tempdata2)){
       case <- (explanation %>% filter(case == r))
       #print(case[,c(2,3,10,11)])
@@ -395,6 +408,7 @@ for(level in levels){
    cat('</div>')
 }
 ```
+
 </div>
 
 </div>
