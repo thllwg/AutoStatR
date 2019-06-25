@@ -15,7 +15,6 @@
 #' @export
 autostatr <- function(data, data_to_predict=NULL, target,
                       type = c("regr","classif"),
-                      # explain = c("importance","lime","ale"),
                       output_dir = "~/Desktop",
                       title) {
 
