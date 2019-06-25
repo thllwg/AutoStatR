@@ -331,7 +331,7 @@ p + labs(x = "Feature Importance (Classification Error as Loss)", y = "Feature")
 <div class="explanation">
 ```{r echo=FALSE}
 # Extract feature and produce plot --------------------------------------------
-first.feature <- imp.features[1]
+first.feature <- imp.df[1,"feature"]
 ale <- FeatureEffect$new(predictor, feature = first.feature)
 ale$plot() + theme_bw()
 
@@ -362,7 +362,7 @@ for(i in 1:length(levels)){
 <div class="explanation">
 ```{r echo=FALSE}
 # Extract feature and produce plot --------------------------------------------
-second.feature <- imp.features[2]
+second.feature <- imp.df[2,"feature"]
 ale <- FeatureEffect$new(predictor, feature = second.feature)
 ale$plot() + theme_bw()
 
