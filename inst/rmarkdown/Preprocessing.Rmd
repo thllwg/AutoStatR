@@ -82,9 +82,6 @@ width: 100%;
   display: block;
   margin: 0 auto;
 }
-#section-explanationSample{
-  
-}
 .exexpand{
   display: block;
 }
@@ -112,8 +109,11 @@ function expand() {
   isExpanded = !isExpanded
 }
 function expand2(){
-  isExpanded2 ? document.getElementById('section-explanationSample').setAttribute("class", "excollapse") :     document.getElementById('section-explanationSample').setAttribute("class", "exexpand")
-  isExpanded2 = !isExpanded2
+  if (document.getElementById('section-explanationSample') != null){
+    isExpanded2 ? document.getElementById('section-explanationSample').setAttribute("class", "excollapse") :     document.getElementById('section-explanationSample').setAttribute("class", "exexpand")
+    isExpanded2 = !isExpanded2}
+    else{isExpanded2 ? document.getElementById('explanationSample').setAttribute("class", "excollapse") :     document.getElementById('explanationSample').setAttribute("class", "exexpand")
+    isExpanded2 = !isExpanded2}
 }
 </script>
 
