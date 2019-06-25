@@ -43,42 +43,42 @@ width: 100%;
   border-color: transparent;
   width: fit-content;
 }
-#section-generations{
+.generations{
   text-align: center;
 }
-#section-predictions div{
+.predictions div{
   text-align: center;
  }
-#section-explanation{
+.explanation{
   text-align: center;
  }
-#section-predictions div{
+.predictions div{
   max-height: 300px;
   margin-top: 15px;
   padding: 0px !important;
 }
-#section-predictions div table thead tr th{
+.predictions div table thead tr th{
   text-align: center !important;
 }
-#section-predictions div table tbody tr td{
+.predictions div table tbody tr td{
   text-align: center !important;
 }
-#section-explanationLime .content div{
+.explanationLime .content div{
   max-height: 300px;
   margin-top: 15px;
   padding: 0px !important;
 }
-#section-explanationLime .content table thead tr th{
+.explanationLime .content table thead tr th{
   text-align: center !important;
 }
-#section-explanationLime .content table tbody tr td{
+.explanationLime .content table tbody tr td{
   text-align: center !important;
 }
-#section-explanationLime img{
+.explanationLime img{
   display: block;
   margin: 0 auto;
 }
-#section-explanationLimeTestData img{
+.explanationLimeTestData img{
   display: block;
   margin: 0 auto;
 }
@@ -232,14 +232,14 @@ generations <- getGenerations(mod)
 To find the best learning pipeline, the Automated Statistician iterated over a total of `r length(generations)` generations. The best pipeline has an accurancy of `r max(generations)` for the input training data. Below is a plot which shows how the accuracy developed over the generations.
 </p>
 
-<div id="generations">
+<div class="generations">
 ```{r echo=FALSE}
 plot(generations, type="b", xlab="Generations", ylab="CV score", xaxt="n")
 axis(1, at = seq(1, 15, by = 1), las=2)
 ```
 </div>
 
-<div id="predictions">
+<div class="predictions">
 
 `r if(nrow(params$data_to_predict)){"For the provided test data the pipeline predicted the missing target feature values:"}`
 ```{r echo=FALSE}
@@ -309,7 +309,7 @@ imp.features
 
 <p>The following plot shows the importance of each feature. The ratio of classification error is calculated as follows: Increase in classification error through permutation divided by the original classification error. The dot is the median and the bar describes the range of the classification error ratio.</p>
 
-<div id="explanation">
+<div class="explanation">
 ```{r echo=FALSE}
 plot(imp) + labs(x = "Feature Importance (Classification Error as Loss)", y = "Feature") + theme_bw()
 ```
@@ -326,7 +326,7 @@ plot(imp) + labs(x = "Feature Importance (Classification Error as Loss)", y = "F
 
 <p>The following two ALE-plots show how the two most important features <b>(`r paste(imp.features[1:2], sep = ", ")`)</b> influence the prediction of the model:</p>
 
-<div id="explanation">
+<div class="explanation">
 ```{r echo=FALSE}
 # Extract feature and produce plot --------------------------------------------
 first.feature <- imp.features[1]
@@ -357,7 +357,7 @@ for(i in 1:length(levels)){
 
 <p>For the given classification problem the most important feature according to the feature importance analysis  is <b>`r paste(imp.features[1], sep = ", ")`</b>. The ALE-plot provides an analysis how this feature influences the target <b>`r target`</b> with its `r length(levels)` classes. `r paste(ale.desc, collapse="")`</p>
 
-<div id="explanation">
+<div class="explanation">
 ```{r echo=FALSE}
 # Extract feature and produce plot --------------------------------------------
 second.feature <- imp.features[2]
@@ -395,7 +395,7 @@ for(i in 1:length(levels)){
 
 <p><i>Local surrogate models like LIME are interpretable models that are used to explain individual predictions of black box machine learning models.</i></p>
 
-<div id="explanationLimeTestData">
+<div class="explanationLimeTestData">
 <h5>Explaining the predicted values</h5>
 <p>For the predicted data Lime provides the below explanations. The colour represents the feature weight and gives an indication, which features and feature values are most responsible for the prediction.</p>
 ```{r echo=FALSE, results='asis'}
@@ -414,7 +414,7 @@ print(plot_explanations(explanation))
 ```{r echo=FALSE, results='asis'}
 levels <- levels(params$data[,params$target])
 for(level in levels){
-   cat('<div id="explanationLime">')
+   cat('<div class="explanationLime">')
    cat(paste('<h5> ', level , '</h5>', sep = ""))
    cat('<div class="content">')
    tempdata <- params$data[params$data[,params$target] == level,]
