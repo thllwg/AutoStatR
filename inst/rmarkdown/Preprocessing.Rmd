@@ -401,6 +401,8 @@ for(i in 1:length(levels)){
 <h5>Explaining the predicted values</h5>
 <p>For the predicted data Lime provides the explanations below. The colour represents the feature weight and gives an indication, which features and feature values are most responsible for the prediction.</p>
 ```{r echo=FALSE, results='asis'}
+full_predicted_data <- params$data[,1:ncol(params$data)-1]
+full_predicted_data[,params$target] <- predict(obj = mod, newdata = params$data)$data$response
 explainer1 <- lime(params$data, mod)
 explanation <- lime::explain(test, explainer1, n_labels = 1, n_features = 5)
 print(plot_explanations(explanation))
@@ -414,12 +416,12 @@ print(plot_explanations(explanation))
 
 <p>In the following plots for each class 5 selected observations are eplained by LIME.</p>
 ```{r echo=FALSE, results='asis'}
-levels <- levels(params$data[,params$target])
+levels <- levels(full_predicted_data[,params$target])
 for(level in levels){
    cat('<div class="explanationLime">')
    cat(paste('<h5> ', level , '</h5>', sep = ""))
    cat('<div class="content">')
-   tempdata <- params$data[params$data[,params$target] == level,]
+   tempdata <- full_predicted_data[full_predicted_data[,params$target] == level,]
    nrow <- nrow(tempdata)
    sample <- sample.int(nrow, size = 5, replace = FALSE)
    tempdata2 <- tempdata[sample,]
