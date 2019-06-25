@@ -105,8 +105,11 @@ width: 100%;
 var isExpanded = false;
 var isExpanded2 = false;
 function expand() {
+  if (document.getElementById('section-scrolltable') != null){
   isExpanded ? document.getElementById('section-scrolltable').setAttribute("class", "scrolltable") : document.getElementById('section-scrolltable').setAttribute("class", "expand")
-  isExpanded = !isExpanded
+  isExpanded = !isExpanded}
+  else{isExpanded ? document.getElementById('scrolltable').setAttribute("class", "scrolltable") : document.getElementById('scrolltable').setAttribute("class", "expand")
+  isExpanded = !isExpanded}
 }
 function expand2(){
   if (document.getElementById('section-explanationSample') != null){
