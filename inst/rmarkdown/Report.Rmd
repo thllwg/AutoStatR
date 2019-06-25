@@ -312,7 +312,8 @@ imp.features
 <div class="explanation">
 ```{r echo=FALSE}
 imp.data = imp$results
-p <- ggplot(data = imp.data[order(imp.data$importance, decreasing = FALSE),], aes(x=feature, y=importance)) + geom_point()
+imp.data$feature <- factor(imp.data$feature, levels = imp.data$feature[order(imp.data$importance)])
+p <- ggplot(data = imp.data, aes(x=feature, y=importance)) + geom_point()
 p + labs(x = "Feature", y = "Feature Importance (Classification Error as Loss)") + theme_bw()
 ```
 </div>
