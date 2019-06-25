@@ -12,7 +12,7 @@ df[,7] = as.numeric(df[,7])
 df[,8] = as.numeric(df[,8])
 df[,9] = as.numeric(df[,9])
 
-smp_size <- floor(0.95 * nrow(df))
+smp_size <- floor(0.99 * nrow(df))
 ## set the seed to make your partition reproducible
 set.seed(123)
 train_ind <- sample(seq_len(nrow(df)), size = smp_size)
