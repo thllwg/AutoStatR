@@ -18,6 +18,14 @@ autostatr <- function(data, data_to_predict=NULL, target,
                       # explain = c("importance","lime","ale"),
                       output_dir = "~/Desktop",
                       title) {
+  checkmate::assertDataFrame(data)
+  checkmate::assertDataFrame(data_to_predict, null.ok = TRUE)
+  if (!is.null(data_to_predict)){
+    checkmate::assertTRUE((ncol(data)-ncol(data_to_predict))<=1)
+  }
+  checkmate::assertChoice(type, "classif")
+  checkmate::assertCharacter(title)
+
 
   # Convert target column to factor -------------------------------------------
   if(!is.factor(data[,target])){
