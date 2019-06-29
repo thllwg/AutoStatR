@@ -12,12 +12,14 @@ df[,7] = as.numeric(df[,7])
 df[,8] = as.numeric(df[,8])
 df[,9] = as.numeric(df[,9])
 
+# Select test split -----------------------------------------------------------
 smp_size <- floor(0.99 * nrow(df))
-## set the seed to make your partition reproducible
+
+# Set the seed to make partition reproducible ---------------------------------
 set.seed(123)
 train_ind <- sample(seq_len(nrow(df)), size = smp_size)
-
 train <- df[train_ind, ]
 test <- df[-train_ind, ]
 
+# Call the automatic statistician ---------------------------------------------
 autostatr(data = train, data_to_predict = test, target = "Class", type = "classif", title = "Breast Cancer")

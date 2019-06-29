@@ -17,6 +17,8 @@ autostatr <- function(data, data_to_predict=NULL, target,
                       type = c("regr","classif"),
                       output_dir = "~/Desktop",
                       title) {
+
+  # Checking arguments --------------------------------------------------------
   checkmate::assertDataFrame(data)
   checkmate::assertDataFrame(data_to_predict, null.ok = TRUE)
   if (!is.null(data_to_predict)){
