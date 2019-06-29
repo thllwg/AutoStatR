@@ -163,7 +163,7 @@ require("dplyr")
 <div class="col-sm">
 
 <h3>Brief description of the data set</h3>
-<p> The dataset analyzed in this report is described hereafter. The passed dataset has `r ncol(params$data)` features (columns) and `r nrow(params$data)` observations (rows). The feature of interest, the target column, is "`r params$target`" and has `r length(levels(params$data[,params$target]))` classes (`r levels(data[,params$target])`). The following table summarizes all features of the data set and provides a descriptive overview of the individual features. It provides the following information: <strong>No:</strong> The number of the feature indicating the order in which it appears in the dataset. <strong>Variable:</strong> The name of the feature and its class. <strong>Stats/Values:</strong> An insight into the feature's values. <strong>Freqs: </strong> The frequency, proportions or number of distinct values. <strong>Graph:</strong> A histogram or barplot of the feature's values. <strong> Valid/Missing:</strong> The number and proportion of valid and missing values in the feature. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
+<p> The dataset analyzed in this report is described hereafter. The passed dataset has <b>`r ncol(params$data)`</b> features (columns) and <b>`r nrow(params$data)`</b> observations (rows). The feature of interest, the target column, is <b>`r params$target`</b> and has <b>`r length(levels(params$data[,params$target]))`</b> classes <b>(`r levels(data[,params$target])`)</b>. The following table summarizes all features of the data set and provides a descriptive overview of the individual features. It provides the following information: <strong>No:</strong> The number of the feature indicating the order in which it appears in the dataset. <strong>Variable:</strong> The name of the feature and its class. <strong>Stats/Values:</strong> An insight into the feature's values. <strong>Freqs: </strong> The frequency, proportions or number of distinct values. <strong>Graph:</strong> A histogram or barplot of the feature's values. <strong> Valid/Missing:</strong> The number and proportion of valid and missing values in the feature. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
 
 <div id="scrolltable" class="scrolltable">
 
@@ -220,7 +220,7 @@ pipeline <- getPipeline(mod)
 generations <- getGenerations(mod)
 ```
 
-<p>The Automated Statistician has fitted a machine learning pipeline, that can predict the target variable "`r params$target`" in the dataset "`r params$title`" with an accurancy of `r max(generations)`. The best machine learning pipeline is:</p>
+<p>The Automated Statistician has fitted a machine learning pipeline, that can predict the target variable <b>`r params$target`</b> in the dataset <b>`r params$title`</b> with an accurancy of <b>`r max(generations)`</b>. The best machine learning pipeline is:</p>
 
 <pre id="pipeline">
 <code>
@@ -229,7 +229,7 @@ generations <- getGenerations(mod)
 </pre>
 
 <p>
-To fit a machine learning pipeline, the Automated Statistician tried different combination of pipeline operators over `r length(generations)` generations. The best pipeline is the one with the highest accurancy for the input training data. The plot below shows how the accuracy increased during the fitting of the pipeline.
+To fit a machine learning pipeline, the Automated Statistician tried different combination of pipeline operators over <b>`r length(generations)`</b> generations. The best pipeline is the one with the highest accurancy for the input training data. The plot below shows how the accuracy increased during the fitting of the pipeline.
 </p>
 
 <div class="generations">
@@ -287,7 +287,7 @@ if(nrow(params$data_to_predict) > 0){
 
 ```{r include=FALSE}
 predictor <- Predictor$new(mod, data = params$data, y = params$target)
-imp <- FeatureImp$new(predictor, loss = "ce", compare = "difference")
+imp <- FeatureImp$new(predictor, loss = "ce", compare = "ratio")
 imp.df <- imp$results
 imp.df[,"cum_importance"] <- cumsum(imp.df$importance)
 imp.sum <- sum(imp.df$importance)
@@ -307,18 +307,18 @@ imp.features
 
 <p><i>The importance of a feature is measured by calculating the increase in the model’s prediction error after permuting the feature. A feature is important if shuffling its values increases the model error, because in this case the model relied on the feature for the prediction.</i></p>
 
-<p>The following plot shows the importance of each feature. The ratio of classification error is calculated as follows: Increase in classification error through permutation divided by the original classification error. The dot is the median and the bar describes the range of the classification error ratio.</p>
+<p>The following plot shows the importance of each feature. The ratio of classification error is calculated as follows: Increase in classification error through permutation divided by the original classification error. The dot is the median after several permutations:</p>
 
 <div class="explanation">
 ```{r echo=FALSE}
 imp.data = imp$results
 imp.data$feature <- factor(imp.data$feature, levels = imp.data$feature[order(imp.data$importance)])
 p <- ggplot(data = imp.data, aes(x=feature, y=importance)) + geom_point()
-p + labs(x = "Feature", y = "Feature Importance (Classification Error as Loss)") + theme_bw()
+p + labs(x = "Feature", y = "Feature Importance Ratio (Classification Error as Loss)") + theme_bw()
 ```
 </div>
 
-<p>The plot shows that from the <b>`r length(data) - 1`</b> features of the data set the following <b>`r length(imp.features)`</b> are identified as the most important features that account for at least <b>80%</b> of the total prediction error: <b>`r paste(imp.features, sep = ", ")`</b>.</p>
+<p>The plot shows that from the <b>`r length(data) - 1`</b> features of the data set the following <b>`r length(imp.features)`</b> are identified as the most important features that influence the total prediction error the most: <b>`r paste(imp.features, sep = ", ")`</b>.</p>
 
 <br>
 
