@@ -15,7 +15,6 @@
 #' @export
 autostatr <- function(data, data_to_predict=NULL, target,
                       type = c("regr","classif"),
-                      # explain = c("importance","lime","ale"),
                       output_dir = "~/Desktop",
                       title) {
   checkmate::assertDataFrame(data)
@@ -41,7 +40,7 @@ autostatr <- function(data, data_to_predict=NULL, target,
   print(train)
 
   # Render the Report ---------------------------------------------------------
-  rmarkdown::render(system.file("rmarkdown", "Preprocessing.Rmd",
+  rmarkdown::render(system.file("rmarkdown", "Report.Rmd",
                                 package = "AutoStatR"),
                     params = list(data = train, data_to_predict = test,
                                   target = target, type = type, title = title),
