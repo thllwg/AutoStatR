@@ -7,7 +7,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-The Automatic Statistician works on macOS and Linux systems, that have a working installation of the python/R data science platform [Anaconda](https://www.anaconda.com/distribution/). Additionally, [XQuartz]https://www.xquartz.org/ needs to be installed on macOS.
+The Automatic Statistician works on macOS and Linux systems, that have a working installation of the python/R data science platform [Anaconda](https://www.anaconda.com/distribution/). Additionally, [XQuartz](https://www.xquartz.org/) needs to be installed on macOS.
 
 ### Installing
 
