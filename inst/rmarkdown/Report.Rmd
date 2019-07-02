@@ -220,7 +220,7 @@ pipeline <- getPipeline(mod)
 generations <- getGenerations(mod)
 ```
 
-<p>The Automated Statistician has fitted a machine learning pipeline, that can predict the target variable <b>`r params$target`</b> in the dataset <b>`r params$title`</b> with an accurancy of <b>`r max(generations)`</b>. The best machine learning pipeline is:</p>
+<p>The Automated Statistician has fitted a machine learning pipeline, that can predict the target variable <b>`r params$target`</b> in the dataset <b>`r params$title`</b> with an classificationaccurancy of <b>`r max(generations)`</b>. The best machine learning pipeline is:</p>
 
 <pre id="pipeline">
 <code>
@@ -229,7 +229,7 @@ generations <- getGenerations(mod)
 </pre>
 
 <p>
-To fit a machine learning pipeline, the Automated Statistician tried different combination of pipeline operators over <b>`r length(generations)`</b> generations. The best pipeline is the one with the highest accurancy for the input training data. The plot below shows how the accuracy increased during the fitting of the pipeline.
+To fit a machine learning pipeline, the Automated Statistician tried different combination of pipeline operators over <b>`r length(generations)`</b> generations. The best pipeline is the one with the highest classification accurancy for the input training data. The plot below shows how the accuracy increased during the fitting of the pipeline.
 </p>
 
 <div class="generations">
@@ -287,7 +287,7 @@ if(nrow(params$data_to_predict) > 0){
 
 ```{r include=FALSE}
 predictor <- Predictor$new(mod, data = params$data, y = params$target)
-imp <- FeatureImp$new(predictor, loss = "ce", compare = "ratio")
+imp <- FeatureImp$new(predictor, loss = "ce", compare = "difference")
 imp.df <- imp$results
 imp.df[,"cum_importance"] <- cumsum(imp.df$importance)
 imp.sum <- sum(imp.df$importance)
@@ -295,7 +295,7 @@ imp.cum <- imp.df[,"cum_importance"]
 imp.df[,"cum_importance"] <- sapply(imp.cum, function(x){
   x / imp.sum
 })
-min <- min(which(imp.df[,"cum_importance"] > 0.8))
+min <- min(which(imp.df[,"cum_importance"] > 0.5))
 imp.features <- imp.df[1:min,"feature"]
 imp.features
 ```
@@ -307,18 +307,18 @@ imp.features
 
 <p><i>The importance of a feature is measured by calculating the increase in the model’s prediction error after permuting the feature. A feature is important if shuffling its values increases the model error, because in this case the model relied on the feature for the prediction.</i></p>
 
-<p>The following plot shows the importance of each feature. The ratio of classification error is calculated as follows: Increase in classification error through permutation divided by the original classification error. The dot is the median after several permutations:</p>
+<p>The following plot shows the importance of each feature. The classification error increase is calculated as follows: Classification error through permutation minus the original classification error. Consequently if a feature has a classification error increase of 0, it is not important for the prediction. The dot is the median after several permutations:</p>
 
 <div class="explanation">
 ```{r echo=FALSE}
 imp.data = imp$results
 imp.data$feature <- factor(imp.data$feature, levels = imp.data$feature[order(imp.data$importance)])
 p <- ggplot(data = imp.data, aes(x=feature, y=importance)) + geom_point()
-p + labs(x = "Feature", y = "Feature Importance Ratio (Classification Error as Loss)") + theme_bw()
+p + labs(x = "Feature", y = "Feature Importance as Classification Error Increase") + theme_bw()
 ```
 </div>
 
-<p>The plot shows that from the <b>`r length(data) - 1`</b> features of the data set the following <b>`r length(imp.features)`</b> are identified as the most important features that influence the total prediction error the most: <b>`r paste(imp.features, sep = ", ")`</b>.</p>
+<p>The plot shows that from the <b>`r length(data) - 1`</b> features of the data set the following <b>`r length(imp.features)`</b> `r if (length(imp.features) == 1) {"feature is identified as the most important features that is at least equally important as the remaining features: "} else {"features are identified as the most important features that are at least equally as important as the remaining features:"}` <b>`r paste(imp.features, sep = ", ")`</b>. Randomely shuffeling the feature <b>`r imp.features[1]`</b> increases the prediction error the most from <b>`r 1 - max(generations)`</b> to <b>`r imp.df[1,"permutation.error"]`</b> by a factor of <b>`r imp.df[1,"permutation.error"] / (1 - max(generations))`</b>. Therefore <b>`r imp.features[1]`</b> can bee seen as the most important feature for predicting <b>`r target`</b>.</p>
 
 <br>
 
