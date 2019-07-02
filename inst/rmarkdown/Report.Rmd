@@ -142,7 +142,7 @@ require("dplyr")
 
 <div class="col-sm">
 
-<h1 class="title">`r paste('Automatic report for the dataset:',params$title)`</h1>
+<h1 class="title">`r paste('Automatic report for the dataset:',params$type)`</h1>
 <h4 class="date">`r Sys.Date()`</h4>
 <h4 class="abstract">Abstract</h4>
 <p class="abstract"> This report analyses the dataset `r params$title`. </p>
@@ -167,7 +167,7 @@ require("dplyr")
 
 <div id="scrolltable" class="scrolltable">
 
-```{r results='asis', echo=FALSE}
+```{r summarytools, results='asis', echo=FALSE}
 data <- data
 print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, headings = FALSE, tmp.img.dir = "/tmp"))
 #dfSummary(data, plain.ascii = FALSE, style = "grid")
@@ -191,22 +191,22 @@ print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, h
 
 <h3>Fitting a machine learning pipeline</h3>
 
-```{r echo=FALSE, include=FALSE}
+```{r tpotr, echo=FALSE, include=FALSE}
 if(type=="classif"){
-  task <- makeClassifTask(data = params$data, target = params$target)
-  learner <- makeLearner(cl = "classif.tpot", predict.type = "prob", 
+  task <- mlr::makeClassifTask(data = params$data, target = params$target)
+  learner <- mlr::makeLearner(cl = "classif.tpot", predict.type = "prob", 
                        population_size = 10, generations = 15, 
                        verbosity = 2)
 } else{
-  task <- makeRegrTask(data = params$data, target = params$target)
-  learner <- makeLearner(cl = "regr.tpot", predict.type = "response", 
+  task <- mlr::makeRegrTask(data = params$data, target = params$target)
+  learner <- mlr::makeLearner(cl = "regr.tpot", predict.type = "response", 
                        population_size = 10, generations = 15, 
                        verbosity = 2)
 }
 mod = NULL; pred = NULL; again = TRUE;
 while(again == TRUE){
   result = try({
-    mod = train(learner, task)
+    mod = mlr::train(learner, task)
     # don't uncomment this line or you will not find out as to whether a loop is necessary!!
     pred = predict(obj = mod, newdata = test)
   }, silent = TRUE)
@@ -233,7 +233,7 @@ To fit a machine learning pipeline, the Automated Statistician tried different c
 </p>
 
 <div class="generations">
-```{r echo=FALSE}
+```{r generations, echo=FALSE}
 plot(generations, type="b", xlab="Generations", ylab="CV score", xaxt="n")
 axis(1, at = seq(1, 15, by = 1), las=2)
 ```
@@ -242,7 +242,7 @@ axis(1, at = seq(1, 15, by = 1), las=2)
 <div class="predictions">
 
 `r if(nrow(params$data_to_predict)){"For the provided test data the pipeline predicted the missing target feature values:"}`
-```{r echo=FALSE}
+```{r prediction, echo=FALSE}
 if(nrow(params$data_to_predict) > 0){
   test <- params$data_to_predict[, !names(params$data_to_predict) %in% c(params$target)]
   prediction <- cbind("Prediction" = predict(obj = mod, newdata = test)$data$response, test)
@@ -285,7 +285,7 @@ if(nrow(params$data_to_predict) > 0){
 <h3>Model explanation</h3>
 <p> To explain the fitted machine learning model different model-agnostic methods are used in the following. They are based on the book <i>Interpratable Machine Learning</i> by Christoph Molnar.</p>
 
-```{r include=FALSE}
+```{r model-agnostic, include=FALSE}
 predictor <- Predictor$new(mod, data = params$data, y = params$target)
 imp <- FeatureImp$new(predictor, loss = "ce", compare = "ratio")
 imp.df <- imp$results
@@ -330,7 +330,7 @@ p + labs(x = "Feature", y = "Feature Importance Ratio (Classification Error as L
 <p>The following two ALE-plots show how the two most important features <b>(`r paste(imp.features[1:2], sep = ", ")`)</b> influence the prediction of the model:</p>
 
 <div class="explanation">
-```{r echo=FALSE}
+```{r ale, echo=FALSE}
 # Extract feature and produce plot --------------------------------------------
 first.feature <- imp.df[1,"feature"]
 ale <- FeatureEffect$new(predictor, feature = first.feature)
@@ -361,7 +361,7 @@ for(i in 1:length(levels)){
 <p>For the given classification problem the most important feature according to the feature importance analysis  is <b>`r paste(imp.features[1], sep = ", ")`</b>. The ALE-plot provides an analysis how this feature influences the target <b>`r target`</b> with its `r length(levels)` classes. `r paste(ale.desc, collapse="")`</p>
 
 <div class="explanation">
-```{r echo=FALSE}
+```{r ale2, echo=FALSE}
 # Extract feature and produce plot --------------------------------------------
 second.feature <- imp.df[2,"feature"]
 ale <- FeatureEffect$new(predictor, feature = second.feature)
@@ -416,7 +416,7 @@ print(plot_explanations(explanation))
 <p>To explain the inner working of the fitted model even further, 5 observations are randomely selected for each class and their belonging to each class is explained with LIME.</p>
 
 <p>In the following plots for each class 5 selected observations are eplained by LIME.</p>
-```{r echo=FALSE, results='asis'}
+```{r lime, echo=FALSE, results='asis'}
 levels <- levels(full_predicted_data[,params$target])
 for(level in levels){
    cat('<div class="explanationLime">')
