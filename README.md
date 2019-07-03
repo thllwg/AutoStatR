@@ -42,6 +42,6 @@ autostatr(data=train, data_to_predict=test, target="Species", type="classif", ti
 ## Authors
 
 * **Thorben Hellweg** - [thllwg](https://github.com/thllwg)
-* **Christopher Olbrich**  
-* **Christian Werner** 
+* **Christopher Olbrich** - [ChristopherOlbrich](https://github.com/ChristopherOlbrich) 
+* **Christian Werner** - [Bl7tzcrank](https://github.com/Bl7tzcrank)
 
