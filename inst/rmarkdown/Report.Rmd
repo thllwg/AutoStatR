@@ -142,7 +142,7 @@ require("dplyr")
 
 <div class="col-sm">
 
-<h1 class="title">`r paste('Automatic report for the dataset:',params$type)`</h1>
+<h1 class="title">`r paste('Automatic report for the dataset:',params$title)`</h1>
 <h4 class="date">`r Sys.Date()`</h4>
 <h4 class="abstract">Abstract</h4>
 <p class="abstract"> This report analyses the dataset `r params$title`. </p>
