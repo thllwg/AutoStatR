@@ -327,7 +327,7 @@ p + labs(x = "Feature", y = "Feature Importance as Classification Error Increase
 
 <p><i>Accumulated local effects (ALE) describe how features influence the prediction of a machine learning model on average.</i></p>
 
-<p>The following two ALE-plots show how the two most important features <b>(`r paste(imp.features[1:2], sep = ", ")`)</b> influence the prediction of the model:</p>
+<p>The following two ALE-plots show how the two most important features <b>(`r paste(imp.df[1:2,"feature"], sep = ", ")`)</b> influence the prediction of the model:</p>
 
 <div class="explanation">
 ```{r echo=FALSE}
@@ -358,7 +358,7 @@ for(i in 1:length(levels)){
 ```
 </div>
 
-<p>For the given classification problem the most important feature according to the feature importance analysis  is <b>`r paste(imp.features[1], sep = ", ")`</b>. The ALE-plot provides an analysis how this feature influences the target <b>`r target`</b> with its `r length(levels)` classes. `r paste(ale.desc, collapse="")`</p>
+<p>For the given classification problem the most important feature according to the feature importance analysis  is <b>`r paste(imp.df[1,"feature"], sep = ", ")`</b>. The ALE-plot provides an analysis how this feature influences the target <b>`r target`</b> with its `r length(levels)` classes. `r paste(ale.desc, collapse="")`</p>
 
 <div class="explanation">
 ```{r echo=FALSE}
@@ -389,7 +389,7 @@ for(i in 1:length(levels)){
 ```
 </div>
 
-<p>The second most important feature according to the feature importance analysis is <b>`r paste(imp.features[2], sep = ", ")`</b>. The plot illustrates how <b>`r paste(imp.features[2], sep = ", ")`</b> influences the target <b>`r target`</b>. `r paste(ale.desc, collapse="")`</p>
+<p>The second most important feature according to the feature importance analysis is <b>`r paste(imp.df[2,"feature"], sep = ", ")`</b>. The plot illustrates how <b>`r paste(imp.df[2,"feature"], sep = ", ")`</b> influences the target <b>`r target`</b>. `r paste(ale.desc, collapse="")`</p>
 
 <br>
 
