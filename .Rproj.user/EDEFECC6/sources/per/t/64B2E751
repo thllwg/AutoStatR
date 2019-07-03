@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1561968212221.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2108358508",
+    "id" : "64B2E751",
+    "lastKnownWriteTime" : 1561968201,
+    "last_content_update" : 1561968201,
+    "path" : "~/workspace/AutoStatR/inst/example/diabetes.R",
+    "project_path" : "inst/example/diabetes.R",
+    "properties" : {
+        "cursorPosition" : "15,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

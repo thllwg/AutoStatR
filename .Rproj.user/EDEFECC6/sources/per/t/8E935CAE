@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1561106783295.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4093652409",
+    "id" : "8E935CAE",
+    "lastKnownWriteTime" : 1561968201,
+    "last_content_update" : 1561968201,
+    "path" : "~/workspace/AutoStatR/inst/example/iris.R",
+    "project_path" : "inst/example/iris.R",
+    "properties" : {
+        "cursorPosition" : "9,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

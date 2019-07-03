@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1562098662925.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3814181500",
+    "id" : "97555141",
+    "lastKnownWriteTime" : 1562163686,
+    "last_content_update" : 1562163686035,
+    "path" : "~/workspace/AutoStatR/inst/rmarkdown/Report.Rmd",
+    "project_path" : "inst/rmarkdown/Report.Rmd",
+    "properties" : {
+        "cursorPosition" : "144,75",
+        "scrollLine" : "132"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1562096112818.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3889473872",
+    "id" : "837EF5C5",
+    "lastKnownWriteTime" : 1562103445,
+    "last_content_update" : 1562103445209,
+    "path" : "~/workspace/AutoStatR/inst/example/glass.R",
+    "project_path" : "inst/example/glass.R",
+    "properties" : {
+        "cursorPosition" : "6,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

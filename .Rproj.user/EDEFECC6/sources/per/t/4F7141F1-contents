@@ -1,0 +1,453 @@
+---
+author: "Admin"
+date: "24 4 2019"
+output:
+  html_document:
+    df_print: paged
+    includes:
+      after_body: footer.html
+runtime: shiny
+params:
+  data: ""
+  data_to_predict: NULL
+  title: ""
+  target: ""
+  type: ""
+---
+
+<style type="text/css">
+h1.title, h4.date, h4.abstract, p.abstract{
+  text-align: center;
+}
+h1.title{
+  margin-top: 30px;
+}
+h4.abstract{
+  margin-top: 50px;
+}
+.outer{
+width: 100%;
+}
+.scrolltable { margin-top: 20px; height: 450px; overflow: auto; }
+.scrolltable table { border-collapse: collapse; }
+.scrolltable tr:nth-child(even) { background: #EEE; }
+.expand tr:nth-child(even) { background: #EEE; }
+#expandButton{
+  cursor: pointer;
+}
+#pipeline{
+  background-color: #EEE;
+  font-size: 110%;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  border-color: transparent;
+  width: fit-content;
+}
+.generations{
+  text-align: center;
+}
+.predictions div{
+  text-align: center;
+ }
+.explanation{
+  text-align: center;
+ }
+.predictions div{
+  max-height: 300px;
+  margin-top: 15px;
+  padding: 0px !important;
+}
+.predictions div table thead tr th{
+  text-align: center !important;
+}
+.predictions div table tbody tr td{
+  text-align: center !important;
+}
+.explanationLime .content div{
+  max-height: 300px;
+  margin-top: 15px;
+  padding: 0px !important;
+}
+.explanationLime .content table thead tr th{
+  text-align: center !important;
+}
+.explanationLime .content table tbody tr td{
+  text-align: center !important;
+}
+.explanationLime img{
+  display: block;
+  margin: 0 auto;
+}
+.explanationLimeTestData img{
+  display: block;
+  margin: 0 auto;
+}
+.exexpand{
+  display: block;
+}
+.excollapse{
+  display: none;
+}
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  text-align: center;
+}
+</style>
+
+<script>
+var isExpanded = false;
+var isExpanded2 = false;
+function expand() {
+  if (document.getElementById('section-scrolltable') != null){
+  isExpanded ? document.getElementById('section-scrolltable').setAttribute("class", "scrolltable") : document.getElementById('section-scrolltable').setAttribute("class", "expand")
+  isExpanded = !isExpanded}
+  else{isExpanded ? document.getElementById('scrolltable').setAttribute("class", "scrolltable") : document.getElementById('scrolltable').setAttribute("class", "expand")
+  isExpanded = !isExpanded}
+}
+function expand2(){
+  if (document.getElementById('section-explanationSample') != null){
+    isExpanded2 ? document.getElementById('section-explanationSample').setAttribute("class", "excollapse") :     document.getElementById('section-explanationSample').setAttribute("class", "exexpand")
+    isExpanded2 = !isExpanded2}
+    else{isExpanded2 ? document.getElementById('explanationSample').setAttribute("class", "excollapse") :     document.getElementById('explanationSample').setAttribute("class", "exexpand")
+    isExpanded2 = !isExpanded2}
+}
+</script>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require("summarytools")
+require("tpotr")
+require("mlr")
+require("stringr")
+require("knitr")
+require("iml")
+require("lime")
+require("ggplot2")
+require("kableExtra")
+require("magrittr")
+require("dplyr")
+```
+
+<!-- HEADER SECTION --> 
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+<h1 class="title">`r paste('Automatic report for the dataset:',params$title)`</h1>
+<h4 class="date">`r Sys.Date()`</h4>
+<h4 class="abstract">Abstract</h4>
+<p class="abstract"> This report analyses the dataset `r params$title`. </p>
+<hr>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- FIRST SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+<h3>Brief description of the data set</h3>
+<p> The dataset analyzed in this report is described hereafter. The passed dataset has `r ncol(data)` features (columns) and `r nrow(data)` observations (rows). The feature of interest, the target column, is "`r target`" and has `r length(levels(data[,length(data)]))` classes (`r levels(data[,length(data)])`). The following table summarizes all features of the data set and provides a descriptive overview of the individual features. It provides the following information: <strong>No:</strong> The number of the feature indicating the order in which it appears in the dataset. <strong>Variable:</strong> The name of the feature and its class. <strong>Stats/Values:</strong> An insight into the feature's values. <strong>Freqs: </strong> The frequency, proportions or number of distinct values. <strong>Graph:</strong> A histogram or barplot of the feature's values. <strong> Valid/Missing:</strong> The number and proportion of valid and missing values in the feature. You can <a id = "expandButton" onclick="expand()">expand/collapse</a> the table.</p><br>
+
+<div id="scrolltable" class="scrolltable">
+
+```{r results='asis', echo=FALSE}
+data <- data
+print(dfSummary(data, plain.ascii = FALSE, style = "grid", graph.magnif = 0.8, headings = FALSE, tmp.img.dir = "/tmp"))
+#dfSummary(data, plain.ascii = FALSE, style = "grid")
+```
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SECOND SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+<h3>Fitting a machine learning pipeline</h3>
+
+```{r echo=FALSE, include=FALSE}
+if(type=="classif"){
+  task <- makeClassifTask(data = params$data, target = params$target)
+  learner <- makeLearner(cl = "classif.tpot", predict.type = "prob", 
+                       population_size = 10, generations = 15, 
+                       verbosity = 2)
+} else{
+  task <- makeRegrTask(data = params$data, target = params$target)
+  learner <- makeLearner(cl = "regr.tpot", predict.type = "response", 
+                       population_size = 10, generations = 15, 
+                       verbosity = 2)
+}
+mod = NULL; pred = NULL; again = TRUE;
+while(again == TRUE){
+  result = try({
+    mod = train(learner, task)
+    # don't uncomment this line or you will not find out as to whether a loop is necessary!!
+    pred = predict(obj = mod, newdata = test)
+  }, silent = TRUE)
+  if (inherits(result, "try-error")){
+    again = TRUE
+  } else {
+    again = FALSE
+  }
+}
+pipeline <- getPipeline(mod)
+generations <- getGenerations(mod)
+```
+
+<p>The Automated Statistician has fitted a machine learning pipeline, that can predict the target variable "`r colnames(data)[length(data)]`" in the dataset "`r params$title`" with an accurancy of `r max(generations)`. The best machine learning pipeline is:</p>
+
+<pre id="pipeline">
+<code>
+`r pipeline`
+</code>
+</pre>
+
+<p>
+To fit a machine learning pipeline, the Automated Statistician tried different combination of pipeline operators over `r length(generations)` generations. The best pipeline is the one with the highest accurancy for the input training data. The plot below shows how the accuracy increased during the fitting of the pipeline.
+</p>
+
+<div class="generations">
+```{r echo=FALSE}
+plot(generations, type="b", xlab="Generations", ylab="CV score", xaxt="n")
+axis(1, at = seq(1, 15, by = 1), las=2)
+```
+</div>
+
+<div class="predictions">
+
+`r if(nrow(params$data_to_predict)){"For the provided test data the pipeline predicted the missing target feature values:"}`
+```{r echo=FALSE}
+if(nrow(params$data_to_predict) > 0){
+  test <- params$data_to_predict[,1:ncol(params$data_to_predict)-1]
+  prediction <- cbind("Prediction" = predict(obj = mod, newdata = test)$data$response, test)
+  write.csv2(prediction, "./prediction.csv")
+  readLines("./prediction.csv") %>% 
+  paste0(collapse="\n") %>% 
+  openssl::base64_encode() -> encoded
+}
+```
+```{r echo=FALSE, results='asis'}
+if(nrow(params$data_to_predict) > 0){
+  cat(kable(prediction) %>% kable_styling(fixed_thead = T) %>% scroll_box(width = "100%"))
+  cat('\n')
+  #print(performance(pred = prediction, measures=list(acc)))
+}
+```
+```{r echo=FALSE}
+if(nrow(params$data_to_predict) > 0){
+  link <- paste0("<a download='prediction.csv' href=", sprintf('data:text/csv;base64,%s', encoded), ">Download this data as   .csv</a>")
+}
+```
+</div>
+
+`r if(nrow(params$data_to_predict)){link}`
+
+</div>
+
+</div>
+
+</div>
+
+<!-- THIRD SECTION --> 
+
+<div class="container outer">
+
+<div class="row">
+
+<div class="col-sm">
+
+<h3>Model explanation</h3>
+<p> To explain the fitted machine learning model different model-agnostic methods are used in the following. They are based on the book <i>Interpratable Machine Learning</i> by Christoph Molnar.</p>
+
+```{r include=FALSE}
+predictor <- Predictor$new(mod, data = params$data, y = params$target)
+imp <- FeatureImp$new(predictor, loss = "ce", compare = "difference")
+imp.df <- imp$results
+imp.df[,"cum_importance"] <- cumsum(imp.df$importance)
+imp.sum <- sum(imp.df$importance)
+imp.cum <- imp.df[,"cum_importance"]
+imp.df[,"cum_importance"] <- sapply(imp.cum, function(x){
+  x / imp.sum
+})
+min <- min(which(imp.df[,"cum_importance"] > 0.8))
+imp.features <- imp.df[1:min,"feature"]
+imp.features
+```
+
+<br>
+
+<h4>Feature Importance</h4>
+<p>To assess the quality of the fitted machine learning model first the importance of each features for the prediction is shown.</p>
+
+<p><i>The importance of a feature is measured by calculating the increase in the model’s prediction error after permuting the feature. A feature is important if shuffling its values increases the model error, because in this case the model relied on the feature for the prediction.</i></p>
+
+<p>The following plot shows the importance of each feature. The ratio of classification error is calculated as follows: Increase in classification error through permutation divided by the original classification error. The dot is the median and the bar describes the range of the classification error ratio.</p>
+
+<div class="explanation">
+```{r echo=FALSE}
+imp.dat = imp$results
+p <- ggplot(data = imp.dat, aes(x=feature, y=importance)) + geom_point()
+p + labs(x = "Feature Importance (Classification Error as Loss)", y = "Feature") + theme_bw()
+```
+</div>
+
+<p>The plot shows that from the <b>`r length(data) - 1`</b> features of the data set the following <b>`r length(imp.features)`</b> are identified as the most important features that account for at least <b>80%</b> of the total prediction error: <b>`r paste(imp.features, sep = ", ")`</b>.</p>
+
+<br>
+
+<h4>Accumulated Local Effects</h4>
+<p>The goal of the first step was to analyse which features influence the prediction of the fitted model the most. As a next step it is analyzed, how the features influence the prediction of the model. This is done by accumulated local affects.</p>
+
+<p><i>Accumulated local effects (ALE) describe how features influence the prediction of a machine learning model on average.</i></p>
+
+<p>The following two ALE-plots show how the two most important features <b>(`r paste(imp.features[1:2], sep = ", ")`)</b> influence the prediction of the model:</p>
+
+<div class="explanation">
+```{r echo=FALSE}
+# Extract feature and produce plot --------------------------------------------
+first.feature <- imp.features[1]
+ale <- FeatureEffect$new(predictor, feature = first.feature)
+ale$plot() + theme_bw()
+
+# Extract result --------------------------------------------------------------
+ale.result <- ale$results
+temp.result <- ale.result %>%
+  group_by_(first.feature) %>%
+  slice(which.max(.ale))
+temp.result2 <- temp.result %>%
+  group_by(.class) %>%
+  summarise(min = min(!!sym(first.feature)), max = max(!!sym(first.feature)))
+
+# Extract description ---------------------------------------------------------
+levels <- temp.result2[[1]]
+ale.desc <- vector(mode="character", length=length(levels))
+for(i in 1:length(levels)){
+  level <- levels[i]
+  temp.result <- subset(temp.result2, .class == level)
+  ale.desc[i] <- paste("The class ", "<b>", level, "</b>", " is based on the feature ", 
+                       "<b>", first.feature, "</b>", " most likely for values between ",
+                       temp.result[[1,"min"]], " and ", paste0(temp.result[[1,"max"]], ". "))
+}
+```
+</div>
+
+<p>For the given classification problem the most important feature according to the feature importance analysis  is <b>`r paste(imp.features[1], sep = ", ")`</b>. The ALE-plot provides an analysis how this feature influences the target <b>`r target`</b> with its `r length(levels)` classes. `r paste(ale.desc, collapse="")`</p>
+
+<div class="explanation">
+```{r echo=FALSE}
+# Extract feature and produce plot --------------------------------------------
+second.feature <- imp.features[2]
+ale <- FeatureEffect$new(predictor, feature = second.feature)
+ale$plot() + theme_bw()
+
+# Extract result --------------------------------------------------------------
+ale.result <- ale$results
+temp.result <- ale.result %>%
+  group_by_(second.feature) %>%
+  slice(which.max(.ale))
+temp.result2 <- temp.result %>%
+  group_by(.class) %>%
+  summarise(min = min(!!sym(second.feature)), max = max(!!sym(second.feature)))
+
+# Extract description ---------------------------------------------------------
+levels <- temp.result2[[1]]
+ale.desc <- vector(mode="character", length=length(levels))
+for(i in 1:length(levels)){
+  level <- levels[i]
+  temp.result <- subset(temp.result2, .class == level)
+  ale.desc[i] <- paste("The class ", "<b>", level, "</b>", " is based on the feature ", 
+                       "<b>", second.feature, "</b>", " most likely for values between ",
+                       temp.result[[1,"min"]], " and ", paste0(temp.result[[1,"max"]], ". "))
+}
+```
+</div>
+
+<p>The second most important feature according to the feature importance analysis is <b>`r paste(imp.features[2], sep = ", ")`</b>. The plot illustrates how <b>`r paste(imp.features[2], sep = ", ")`</b> influences the target <b>`r target`</b>. `r paste(ale.desc, collapse="")`</p>
+
+<br>
+
+<h4>Lime</h4>
+<p>The last step focuses on individual observation to explain why the model makes a certain classification in a given case. This is especially useful when explaining the reason for individual predictions on the predicted data.</p>
+
+<p><i>Local surrogate models like LIME are interpretable models that are used to explain individual predictions of black box machine learning models.</i></p>
+
+<div class="explanationLimeTestData">
+<h5>Explaining the predicted values</h5>
+<p>For the predicted data Lime provides the explanations below. The colour represents the feature weight and gives an indication, which features and feature values are most responsible for the prediction.</p>
+```{r echo=FALSE, results='asis'}
+full_predicted_data <- params$data[,1:ncol(params$data)-1]
+full_predicted_data[,params$target] <- predict(obj = mod, newdata = params$data)$data$response
+explainer1 <- lime(params$data, mod)
+explanation <- lime::explain(test, explainer1, n_labels = 1, n_features = 5)
+print(plot_explanations(explanation))
+```
+</div>
+
+<button class="collapsible" onclick="expand2()">+See more/less observations explained</button>
+
+<div id="explanationSample" class="excollapse">
+<p>To explain the inner working of the fitted model even further, 5 observations are randomely selected for each class and their belonging to each class is explained with LIME.</p>
+
+<p>In the following plots for each class 5 selected observations are eplained by LIME.</p>
+```{r echo=FALSE, results='asis'}
+levels <- levels(full_predicted_data[,params$target])
+for(level in levels){
+   cat('<div class="explanationLime">')
+   cat(paste('<h5> ', level , '</h5>', sep = ""))
+   cat('<div class="content">')
+   tempdata <- full_predicted_data[full_predicted_data[,params$target] == level,]
+   nrow <- nrow(tempdata)
+   sample <- sample.int(nrow, size = 5, replace = FALSE)
+   tempdata2 <- tempdata[sample,]
+   explanation <- lime::explain(tempdata2[,1:length(tempdata2)-1], explainer1, n_labels = 1, n_features = 5)
+   for (r in rownames(tempdata2)){
+      case <- (explanation %>% filter(case == r))
+      #print(case[,c(2,3,10,11)])
+      max_weight <- (case %>% filter(feature_weight == max(feature_weight)))
+      #print(max_weight[,c(2,3,10,11)])
+      tempdata2[r,"Most responsible"] <- max_weight$feature_desc
+      tempdata2[r,"Weight"] <- max_weight$feature_weight
+      #print(max_weight$feature_desc)
+   }
+   cat(kable(tempdata2)%>% kable_styling(fixed_thead = TRUE) %>% scroll_box(width = "100%"))
+   cat('\n')
+   print(plot_explanations(explanation))
+   cat('</div>')
+   cat('</div>')
+}
+```
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+

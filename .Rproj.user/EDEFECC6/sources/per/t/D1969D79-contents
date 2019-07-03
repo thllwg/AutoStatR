@@ -1,0 +1,24 @@
+Package: AutoStatR
+Title: An R package for automated exploratory data analysis
+Version: 0.0.0.9000
+Authors@R: as.person(c(
+    "Thorben Hellweg <thorben.hellweg@uni-muenster.de> [aut, cre]", 
+    "Christopher Olbrich <c_olbr@rstudio.com> [aut]",
+    "Christian Werner <c_wern@rstudio.com> [aut]"
+    ))
+Description: AutoStatR allows automated analysis of data sets in R using descriptive statistical methods, Auto-ML methods and Explainable AI approaches. The result is a report that allows even ML laypersons to use and interpret Machine Learning.
+License: GPL-3 | file LICENSE.md
+URL: https://github.com/thllwg/AutoStatR
+BugReports: https://github.com/thllwg/AutoStatR/issues
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    summarytools,
+    rmarkdown,
+    stringr,
+    kableExtra,
+    magrittr,
+    lime,
+    checkmate
+Remotes: github::thllwg/tpotr
+System Requirements: xquartz, anaconda

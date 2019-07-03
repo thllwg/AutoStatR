@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1560771911836.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "387126301",
+    "id" : "4F7141F1",
+    "lastKnownWriteTime" : 1561450238,
+    "last_content_update" : 1561450238,
+    "path" : "~/workspace/AutoStatR/inst/rmarkdown/Preprocessing.Rmd",
+    "project_path" : "inst/rmarkdown/Preprocessing.Rmd",
+    "properties" : {
+        "cursorPosition" : "227,7",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

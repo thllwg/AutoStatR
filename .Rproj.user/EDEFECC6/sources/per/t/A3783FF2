@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1561132227275.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2530806873",
+    "id" : "A3783FF2",
+    "lastKnownWriteTime" : 1561968201,
+    "last_content_update" : 1561968201,
+    "path" : "~/workspace/AutoStatR/inst/example/cancer.R",
+    "project_path" : "inst/example/cancer.R",
+    "properties" : {
+        "cursorPosition" : "25,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
