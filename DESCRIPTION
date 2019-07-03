@@ -18,6 +18,7 @@ Imports:
     stringr,
     kableExtra,
     magrittr,
-    lime
+    lime,
+    checkmate
 Remotes: github::thllwg/tpotr
 System Requirements: xquartz, anaconda
