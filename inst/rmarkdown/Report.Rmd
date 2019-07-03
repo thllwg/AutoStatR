@@ -220,7 +220,7 @@ pipeline <- getPipeline(mod)
 generations <- getGenerations(mod)
 ```
 
-<p>The Automated Statistician has fitted a machine learning pipeline, that can predict the target variable <b>`r params$target`</b> in the dataset <b>`r params$title`</b> with an classificationaccurancy of <b>`r max(generations)`</b>. The best machine learning pipeline is:</p>
+<p>The Automated Statistician has fitted a machine learning pipeline, that can predict the target variable <b>`r params$target`</b> in the dataset <b>`r params$title`</b> with an classification accurancy of <b>`r max(generations)`</b>. The best machine learning pipeline is:</p>
 
 <pre id="pipeline">
 <code>
