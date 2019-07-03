@@ -323,7 +323,7 @@ p + labs(x = "Feature", y = "Feature Importance as Classification Error Increase
 <br>
 
 <h4>Accumulated Local Effects</h4>
-<p>The goal of the first step was to analyse which features influence the prediction of the fitted model the most. As a next step it is analyzed, how the features influence the prediction of the model. This is done by accumulated local affects.</p>
+<p>The goal of the first step was to analyse which features influence the prediction of the fitted model the most. As a next step it is analyzed, how individual features influence the prediction of the model. This is done by accumulated local affects.</p>
 
 <p><i>Accumulated local effects (ALE) describe how features influence the prediction of a machine learning model on average.</i></p>
 
@@ -355,10 +355,17 @@ for(i in 1:length(levels)){
                        "<b>", first.feature, "</b>", " most likely for values between ",
                        temp.result[[1,"min"]], " and ", paste0(temp.result[[1,"max"]], ". "))
 }
+  
+# Extract second description --------------------------------------------------
+rows <- nrow(ale.result)
+sample <- sample(1:rows, 1)
+ale.example <- ale.result[sample,]
 ```
 </div>
 
-<p>For the given classification problem the most important feature according to the feature importance analysis  is <b>`r paste(imp.df[1,"feature"], sep = ", ")`</b>. The ALE-plot provides an analysis how this feature influences the target <b>`r target`</b> with its `r length(levels)` classes. `r paste(ale.desc, collapse="")`</p>
+<p>For the given classification problem the most important feature according to the feature importance analysis  is <b>`r paste(imp.df[1,"feature"], sep = ", ")`</b>. The ALE-plot provides an analysis how this feature influences the target <b>`r target`</b> with its `r length(levels)` classes. `r paste(ale.desc, collapse="")`</p
+
+<p>As an example if <b>`r paste(imp.df[1,"feature"], sep = ", ")`</b> has the value <b>`r paste(ale.example[1,4], sep = ", ")`</b> the average prediction for <b>`r paste(ale.example[1,1], sep = ", ")`</b> changes by <b>`r paste(round(ale.example[1,2], digits = 4), sep = ", ")`</b> or in other words the probability for <b>`r paste(ale.example[1,1], sep = ", ")`</b> `r if (ale.example[1,2] > 0) {"increases"} else {"decreases"}` by <b>`r paste(abs((round(ale.example[1,2], digits = 4) * 100)), sep = ", ")`</b>%.
 
 <div class="explanation">
 ```{r echo=FALSE}
@@ -386,10 +393,17 @@ for(i in 1:length(levels)){
                        "<b>", second.feature, "</b>", " most likely for values between ",
                        temp.result[[1,"min"]], " and ", paste0(temp.result[[1,"max"]], ". "))
 }
+
+# Extract second description --------------------------------------------------
+rows <- nrow(ale.result)
+sample <- sample(1:rows, 1)
+ale.example <- ale.result[sample,]
 ```
 </div>
 
 <p>The second most important feature according to the feature importance analysis is <b>`r paste(imp.df[2,"feature"], sep = ", ")`</b>. The plot illustrates how <b>`r paste(imp.df[2,"feature"], sep = ", ")`</b> influences the target <b>`r target`</b>. `r paste(ale.desc, collapse="")`</p>
+
+<p>As an example if <b>`r paste(imp.df[2,"feature"], sep = ", ")`</b> has the value <b>`r paste(ale.example[1,4], sep = ", ")`</b> the average prediction for <b>`r paste(ale.example[1,1], sep = ", ")`</b> changes by <b>`r paste(round(ale.example[1,2], digits = 4), sep = ", ")`</b> or in other words the probability for <b>`r paste(ale.example[1,1], sep = ", ")`</b> `r if (ale.example[1,2] > 0) {"increases"} else {"decreases"}`  by <b>`r paste(abs((round(ale.example[1,2], digits = 4) * 100)), sep = ", ")`</b>%.</p>
 
 <br>
 
