@@ -39,7 +39,7 @@ test <- iris[-train_ind, ]
 autostatr(data=train, data_to_predict=test, target="Species", type="classif", title="Iris")
 ```
 ## Documentation
-You can read more about *tpotr* and its application in AutoML in the corresponding [docs])(https://thllwg.github.io/tpotr).
+You can read more about *tpotr* and its application in AutoML in the corresponding [docs](https://thllwg.github.io/tpotr).
 
 ## Authors
 
